@@ -1,0 +1,17 @@
+{
+    "name": "Tettris.Scenes",
+    "rootNamespace": "",
+    "references": [
+        "GUID:ad21cf4dd1dd68546810a6ec73daa4d0",
+        "GUID:ee5051e9989fc384f87f02356b3a64c8"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
