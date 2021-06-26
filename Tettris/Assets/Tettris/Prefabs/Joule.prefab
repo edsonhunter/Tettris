@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7600937497259712554}
   - component: {fileID: 5712828653552170490}
   - component: {fileID: 5424690013418601056}
+  - component: {fileID: 1585793728411681095}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -95,6 +96,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1585793728411681095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 354019819660108671}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 602c7d125ebd4ed989c8765e75d819be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GridPosition: {x: 0, y: 0}
 --- !u!1 &5278153157756246383
 GameObject:
   m_ObjectHideFlags: 0
@@ -107,6 +121,7 @@ GameObject:
   - component: {fileID: 3690652389666624099}
   - component: {fileID: 120178750833126918}
   - component: {fileID: 7343522022555385099}
+  - component: {fileID: 3933324701208516885}
   m_Layer: 0
   m_Name: Cube (2)
   m_TagString: Untagged
@@ -190,6 +205,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3933324701208516885
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5278153157756246383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 602c7d125ebd4ed989c8765e75d819be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GridPosition: {x: 0, y: 0}
 --- !u!1 &6623618014906975954
 GameObject:
   m_ObjectHideFlags: 0
@@ -199,6 +227,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5813448138795311683}
+  - component: {fileID: -1225325119152125871}
   m_Layer: 0
   m_Name: Joule
   m_TagString: Untagged
@@ -224,6 +253,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-1225325119152125871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6623618014906975954}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00c9e366799a6534f978b521cdd1a7e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cubes:
+  - {fileID: 1585793728411681095}
+  - {fileID: 89192746949752038}
+  - {fileID: 3933324701208516885}
+  - {fileID: 546619151762731816}
 --- !u!1 &7239663105347597547
 GameObject:
   m_ObjectHideFlags: 0
@@ -236,6 +282,7 @@ GameObject:
   - component: {fileID: 4891811282634201354}
   - component: {fileID: 4979199908354514588}
   - component: {fileID: 5889075767715680385}
+  - component: {fileID: 546619151762731816}
   m_Layer: 0
   m_Name: Cube (3)
   m_TagString: Untagged
@@ -319,6 +366,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &546619151762731816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7239663105347597547}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 602c7d125ebd4ed989c8765e75d819be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GridPosition: {x: 0, y: 0}
 --- !u!1 &9038878805526523795
 GameObject:
   m_ObjectHideFlags: 0
@@ -331,6 +391,7 @@ GameObject:
   - component: {fileID: 6107682850721709965}
   - component: {fileID: 7364628921388160595}
   - component: {fileID: 5413763320703958192}
+  - component: {fileID: 89192746949752038}
   m_Layer: 0
   m_Name: Cube (1)
   m_TagString: Untagged
@@ -414,3 +475,16 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &89192746949752038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9038878805526523795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 602c7d125ebd4ed989c8765e75d819be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GridPosition: {x: 0, y: 0}

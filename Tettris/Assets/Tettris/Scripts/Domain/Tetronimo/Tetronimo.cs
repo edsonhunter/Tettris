@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using Tettris.Domain.Interface.Tetronimo;
 using UnityEngine;
 
@@ -10,38 +10,54 @@ namespace Tettris.Domain.Tetronimo
     {
         public Guid TetronimoId { get; }
         public IList<IBaseTetromino> BaseTetrominos => _baseTetrominos.AsReadOnly();
+        public Vector2 GridPosition { get; private set; }
         private List<IBaseTetromino> _baseTetrominos { get; set; }
+        private EventHandler<Vector3> _onMove { get; set; }
+        private EventHandler<IList<Vector2>> _onRotate { get; set; }
         
+        public event EventHandler<Vector3> OnMove
+        {
+            add => _onMove += value;
+            remove => _onMove -= value;
+        }
+        public event EventHandler<IList<Vector2>> OnRotate
+        {
+            add => _onRotate += value;
+            remove => _onRotate -= value;
+        }
+
         public Tetronimo(Guid tetronimoId, IList<IBaseTetromino> baseTetrominos)
         {
             TetronimoId = tetronimoId;
             _baseTetrominos = new List<IBaseTetromino>(baseTetrominos);
         }
 
-        public IList<IBaseTetromino> Rotate()
+        public void StartPosition(List<Vector3> startPositions)
         {
-            foreach (var baseTetromino in _baseTetrominos)
+            GridPosition = startPositions.First();
+            
+            for (int baseTetrominoIdx = 0; baseTetrominoIdx < _baseTetrominos.Count; baseTetrominoIdx++)
             {
-                baseTetromino.Rotate(Vector2.left);
+                _baseTetrominos[baseTetrominoIdx].Move(startPositions[baseTetrominoIdx]);
             }
-
-            return _baseTetrominos;
+        }
+        
+        public void Rotate(IList<Vector2> newPos)
+        {
+            for (int posIdx = 0; posIdx < _baseTetrominos.Count; posIdx++)
+            {
+                _baseTetrominos[posIdx].SetPosition(newPos[posIdx]);
+            }
+            _onRotate.Invoke(this, newPos);
         }
 
-        public IList<IBaseTetromino> Move(int x, int y)
+        public void Move(Vector2 newPos)
         {
             foreach (var baseTetromino in _baseTetrominos)
             {
-                baseTetromino.Move(new Vector2(baseTetromino.GridPosition.x + x, baseTetromino.GridPosition.y + y));
+                baseTetromino.Move(newPos);
             }
-
-            StringBuilder sb = new StringBuilder();
-            foreach (IBaseTetromino baseTetromino in _baseTetrominos)
-            {
-                sb.Append(string.Format("x: {0}, y: {1} | ",baseTetromino.GridPosition.x, baseTetromino.GridPosition.y));
-            }
-            Debug.Log(sb.ToString());
-            return _baseTetrominos;
+            _onMove.Invoke(this, newPos);
         }
     }
 }

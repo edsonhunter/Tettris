@@ -11,54 +11,84 @@ namespace Tettris.Domain.Board
 {
     public class Board : IBoard
     {
-        public int Altura { get; set; }
-        public int Largura { get; set; }
+        public int Colunas { get; set; }
+        public int Linhas { get; set; }
         public ITile[,] Tiles { get; private set; }
-        private ITetromino CurrentTetromino { get; set; }
 
-        public Board(int altura, int largura, ITile[,] tiles)
+        public Board(int linhas, int colunas, ITile[,] tiles)
         {
-            Altura = altura;
-            Largura = largura;
+            Linhas = linhas;
+            Colunas = colunas;
             Tiles = tiles;
         }
 
-        public void StartNewTetromino(ITetromino newTetromino)
+        public void StartNewTetromino(IList<IBaseTetromino> startPosition)
         {
-            CurrentTetromino = newTetromino;
+            Move(startPosition);
         }
 
-        public bool Move(IList<IBaseTetromino> cubesTetromino)
+        public bool Move(IList<IBaseTetromino> moveTetrominos)
         {
             var moved = false;
-            foreach (var cubes in cubesTetromino)
+            foreach (var movedTetromino in moveTetrominos)
             {
-                if (cubes.GridPosition.x >= Altura || cubes.GridPosition.y >= Largura)
+                var linhaIdx = Mathf.FloorToInt(movedTetromino.GridPosition.y); //O Movimento lateral é baseado em X mas andamos nas colunas do vetor
+                var colunaIdx = Mathf.FloorToInt(movedTetromino.GridPosition.x); //O Movimento vertical é baseado em Y mas andamos nas linhas do vetor
+
+                if (linhaIdx >= Linhas || colunaIdx >= Colunas || linhaIdx < 0 || colunaIdx < 0)
                 {
                     moved = false;
                     break;
                 }
 
-                var tile = Tiles[(int) Math.Round(cubes.GridPosition.x), (int) Math.Round(cubes.GridPosition.y)];
-                if (!tile.OccupySlot(cubes))
+                var tile = Tiles[linhaIdx, colunaIdx];
+                if (!tile.OccupySlot(movedTetromino))
                 {
                     moved = false;
                     break;
                 }
-
                 moved = true;
             }
             return moved;
         }
 
-        public void ClearOldState(ITetromino tetromino)
+        public bool Rotate(IList<IBaseTetromino> moveTetrominos)
         {
-            foreach (var cubes in CurrentTetromino.BaseTetrominos)
+            var moved = false;
+            for (int cubeIdx = 0; cubeIdx < moveTetrominos.Count; cubeIdx++)
             {
-                Tiles[(int) Math.Round(cubes.GridPosition.x), (int) Math.Round(cubes.GridPosition.y)].ReleaseSlot();
-            }
+                var movedTetromino = moveTetrominos[cubeIdx];
+                var linhaIdx = Mathf.FloorToInt(movedTetromino.GridPosition.y); //O Movimento lateral é baseado em X mas andamos nas colunas do vetor
+                var colunaIdx = Mathf.FloorToInt(movedTetromino.GridPosition.x); //O Movimento vertical é baseado em Y mas andamos nas linhas do vetor
 
-            CurrentTetromino = tetromino;
+                if (linhaIdx >= Linhas || colunaIdx >= Colunas)
+                {
+                    moved = false;
+                    break;
+                }
+
+                var tile = Tiles[linhaIdx, colunaIdx];
+                if (!tile.OccupySlot(movedTetromino))
+                {
+                    moved = false;
+                    break;
+                }
+                
+                moved = true;
+            }
+            return moved;
+        }
+
+        public void ClearOldState(IList<IBaseTetromino> oldTetrominos)
+        {
+            foreach (var oldPos in oldTetrominos)
+            {
+                var linhaIdx = Mathf.FloorToInt(oldPos.GridPosition.y); //O Movimento lateral é baseado em X mas andamos nas colunas do vetor
+                var colunaIdx = Mathf.FloorToInt(oldPos.GridPosition.x); //O Movimento vertical é baseado em Y mas andamos nas linhas do vetor
+
+                var tile = Tiles[linhaIdx, colunaIdx];
+                tile.ReleaseSlot();
+            }
         }
 
         public bool CompleteLine()
@@ -66,11 +96,9 @@ namespace Tettris.Domain.Board
             var completed = false;
 
             IList<ITile> tilesToClear = new List<ITile>();
-            for (int x = 0;
-                x < Altura;
-                x++)
+            for (int x = 0; x < Colunas; x++)
             {
-                for (int y = 0; y < Largura; y++)
+                for (int y = 0; y < Linhas; y++)
                 {
                     if (!Tiles[x, y].Occupy)
                     {
@@ -85,7 +113,7 @@ namespace Tettris.Domain.Board
                     continue;
                 }
 
-                if (tilesToClear.Count < Largura)
+                if (tilesToClear.Count < Linhas)
                 {
                     tilesToClear.Clear();
                 }
@@ -111,7 +139,7 @@ namespace Tettris.Domain.Board
             {
                 if (tile.Occupy)
                 {
-                    tetrominosToMove.Add(new BaseTetromino(tile.CurrentTetromino.TetronimoId, tile.CurrentTetromino.Move(Vector2.down), tile.CurrentTetromino.Color));
+                    tetrominosToMove.Add(new BaseTetromino(tile.CurrentTetromino.TetronimoId, tile.CurrentTetromino.Move(Vector2.down)));
                 }
             }
 

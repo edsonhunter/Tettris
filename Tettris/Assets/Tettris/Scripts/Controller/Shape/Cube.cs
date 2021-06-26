@@ -6,11 +6,12 @@ namespace Tettris.Controller.Shape
     public class Cube : MonoBehaviour
     {
         [SerializeField]
-        private Vector2 GridPosition;
+        private Vector2 _gridPosition;
+        public Vector2 GridPosition => _gridPosition;
 
         private void Update()
         {
-            GridPosition = transform.position;
+            _gridPosition = transform.position;
         }
     }
 }

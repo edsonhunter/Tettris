@@ -118,6 +118,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5659443869859010780}
+  - component: {fileID: 2066419263}
   m_Layer: 0
   m_Name: House
   m_TagString: Untagged
@@ -143,6 +144,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2066419263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4221516787746181788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00c9e366799a6534f978b521cdd1a7e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cubes:
+  - {fileID: 5337169510380231143}
+  - {fileID: 37597299706116916}
+  - {fileID: 4347118989184334524}
+  - {fileID: 7391014644291213781}
 --- !u!1 &5975294782413380366
 GameObject:
   m_ObjectHideFlags: 0

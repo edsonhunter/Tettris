@@ -1,18 +1,74 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Tettris.Controller.Shape;
+using Tettris.Services.Interface;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class GameplayScene : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [Header("")]
+    [SerializeField]
+    private List<TetrominoController> TetrominoPrefabs = null;
+
+    [SerializeField]
+    private TetrominoController _currentTetromino = null;
+
+    [SerializeField]
+    private GameObject _startPosition = null;
+
+    private IGameService GameService { get; set; }
+
+    private void Awake()
     {
-        
+        GameService = new GameService();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
-        
+        StartNewTetromino();
+        StartCoroutine(Turno());
+    }
+
+    private void StartNewTetromino()
+    {
+        _currentTetromino = null;
+        var tetromino = GameService.StartNewTetromino();
+        _currentTetromino = Instantiate(TetrominoPrefabs[Random.Range(0, TetrominoPrefabs.Count)], _startPosition.transform.position, Quaternion.identity);
+        _currentTetromino.Init(tetromino);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            GameService.Move(Vector3.left);
+        }
+        else if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            GameService.Move(Vector3.right);
+        }
+
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            GameService.Rotate(Quaternion.Euler(0,0,-90));
+        }
+    }
+    
+    private IEnumerator Turno()
+    {
+        while (GameService.Running)
+        {
+            yield return new WaitForSeconds(5f);
+            GameService.Turno();
+
+            if (_currentTetromino.transform.position.y < 1)
+            {
+                _currentTetromino.End();
+                StartNewTetromino();
+            } 
+        }
     }
 }

@@ -31,7 +31,6 @@ namespace Tettris.Domain.Board
                     return false;
                 }
             }
-
             CurrentTetromino = tetromino;
             Occupy = true;
             return true;
@@ -41,7 +40,7 @@ namespace Tettris.Domain.Board
         {
             if (!Occupy)
             {
-                throw new InvalidOperationException("You cannot release a non-occupied slot");
+                return;
             }
 
             CurrentTetromino = null;

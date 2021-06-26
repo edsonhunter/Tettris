@@ -1,12 +1,11 @@
 {
-    "name": "Tettris.Scenes",
+    "name": "Tettris.Services",
     "rootNamespace": "",
     "references": [
+        "GUID:a943db303bc068848a977d762bb54fab",
         "GUID:ad21cf4dd1dd68546810a6ec73daa4d0",
-        "GUID:ee5051e9989fc384f87f02356b3a64c8",
-        "GUID:da46ee1ffb48d0d4e91bdbad04a8bec6",
         "GUID:f70a10174bc8e5c45a8599525e07eb90",
-        "GUID:d18a6dda9dc650242ae837f8fb8c1594"
+        "GUID:da46ee1ffb48d0d4e91bdbad04a8bec6"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

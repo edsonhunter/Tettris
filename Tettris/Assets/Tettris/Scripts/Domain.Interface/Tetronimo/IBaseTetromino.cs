@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Tettris.Domain.Interface.Board;
 using UnityEngine;
 
@@ -8,8 +9,8 @@ namespace Tettris.Domain.Interface.Tetronimo
     {
         Guid TetronimoId { get; }
         Vector2 GridPosition { get; }
-        int Color { get; }
-        Vector2 Rotate(Vector2 rotateVector);
-        Vector2 Move(Vector2 newPos); 
+        void Rotate(Vector2 pivot, Quaternion newPos);
+        Vector2 Move(Vector2 newPos);
+        void SetPosition(Vector2 newPo);
     }
 }
