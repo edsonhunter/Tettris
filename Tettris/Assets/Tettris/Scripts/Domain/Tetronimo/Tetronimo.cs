@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Tettris.Domain.Interface.Tetronimo;
 using UnityEngine;
 
@@ -50,25 +49,20 @@ namespace Tettris.Domain.Tetronimo
 
         public void Rotate(IList<Vector2> newPos)
         {
-            StringBuilder sb = new StringBuilder();
             for (int posIdx = 0; posIdx < _baseTetrominos.Count; posIdx++)
             {
                 _baseTetrominos[posIdx].SetPosition(newPos[posIdx]);
-                sb.Append($"Tetronimo x:{newPos[posIdx].x}, y: {newPos[posIdx].y} | ");
             }
-            Debug.Log(sb.ToString());
             _onRotate?.Invoke(this, newPos);
         }
 
         public void Move(Vector2 newPos)
         {
-            StringBuilder sb = new StringBuilder();
             foreach (var baseTetromino in _baseTetrominos)
             {
-                sb.Append(" | Tetronimo pos:" + baseTetromino.Move(newPos));
+                baseTetromino.Move(newPos);
             }
 
-            Debug.Log(sb.ToString());
             _onMove?.Invoke(this, newPos);
         }
     }

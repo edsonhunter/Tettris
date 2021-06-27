@@ -9,7 +9,8 @@ namespace Tettris.Domain.Interface.Board
         bool Occupy { get; }
         IBaseTetromino CurrentTetromino { get; }
 
-        bool OccupySlot(IBaseTetromino tetromino);
+        bool CheckSlot(IBaseTetromino tetromino);
+        void OccupySlot(IBaseTetromino tetromino);
         void ReleaseSlot();
     }
 }

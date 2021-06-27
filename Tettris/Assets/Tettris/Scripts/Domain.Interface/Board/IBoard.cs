@@ -7,10 +7,10 @@ namespace Tettris.Domain.Interface.Board
     {
         ITile[,] Tiles { get; }
 
-        void StartNewTetromino(IList<IBaseTetromino> startTetrominos);
+        bool StartNewTetromino(IList<IBaseTetromino> startTetrominos);
         bool Move(IList<IBaseTetromino> movedTetrominos);
         bool Rotate(IList<IBaseTetromino> moveTetrominos);
+        void FinishTurno(IList<IBaseTetromino> tetrominoBaseTetrominos);
         bool CompleteLine();
-        void ClearOldState(IList<IBaseTetromino> baseTetrominosToClear, IList<IBaseTetromino> newPositionBaseTetrominos);
     }
 }

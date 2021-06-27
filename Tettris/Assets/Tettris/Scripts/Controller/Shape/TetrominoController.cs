@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Tettris.Domain.Interface.Tetronimo;
@@ -37,7 +38,16 @@ namespace Tettris.Controller.Shape
         public void End()
         {
             Tetromino.OnMove -= TetrominoOnMove;
-            Destroy(this);
+            Tetromino.OnRotate -= TetrominoOnRotate;
+        }
+
+        public void ClearLine(int line)
+        {
+            IList<Cube> cubesToRemove = _cubes.Where(cube => line == Mathf.FloorToInt(cube.GridPosition.y)).ToList();
+            for (int cubeIdx = 0; cubeIdx < cubesToRemove.Count; cubeIdx++)
+            {
+                _cubes.Remove(cubesToRemove[cubeIdx]);
+            }
         }
     }
 }

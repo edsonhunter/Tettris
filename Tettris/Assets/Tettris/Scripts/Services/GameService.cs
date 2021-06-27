@@ -34,16 +34,16 @@ public class GameService : IGameService
         return Tetromino;
     }
 
-    public bool NexTurno()
+    public bool NextTurno()
     {
         var temporaryPos = Move(Tetromino.BaseTetrominos, Vector2.down);
         if (Board.Move(temporaryPos))
         {
-            Board.ClearOldState(Tetromino.BaseTetrominos, temporaryPos);
             Tetromino.Move(Vector2.down);
             return true;
         }
 
+        Board.FinishTurno(Tetromino.BaseTetrominos);
         Tetromino = null;
         return false;
     }
@@ -51,21 +51,21 @@ public class GameService : IGameService
     public void Move(Vector3 newPos)
     {
         var temporaryPos = Move(Tetromino.BaseTetrominos, newPos);
-        if (Board.Move(temporaryPos))
+        if (!Board.Move(temporaryPos))
         {
-            Board.ClearOldState(Tetromino.BaseTetrominos, temporaryPos);
-            Tetromino.Move(newPos);
+            return;
         }
+        Tetromino.Move(newPos);
     }
 
     public void Rotate(Quaternion newPos)
     {
         var temporaryPos = Rotate(Tetromino.BaseTetrominos, newPos);
-        if(Board.Rotate(temporaryPos))
+        if(!Board.Rotate(temporaryPos))
         {
-            Board.ClearOldState(Tetromino.BaseTetrominos, temporaryPos);
-            Tetromino.Rotate(temporaryPos.Select(x => x.GridPosition).ToList());
+            return;
         }
+        Tetromino.Rotate(temporaryPos.Select(x => x.GridPosition).ToList());
     }
     
     private IBoard CreateBoard(int linha, int coluna)

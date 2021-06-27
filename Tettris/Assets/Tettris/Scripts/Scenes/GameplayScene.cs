@@ -66,9 +66,9 @@ public class GameplayScene : MonoBehaviour
     {
         while (GameService.Running)
         {
-            yield return new WaitForSeconds(5f);
+            yield return new WaitForSeconds(0.1f);
             
-            if (!GameService.NexTurno())
+            if (!GameService.NextTurno())
             {
                 _currentTetromino.End();
                 StartNewTetromino();
