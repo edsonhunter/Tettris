@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Tettris.Domain.Interface.Tetronimo;
@@ -10,29 +9,34 @@ namespace Tettris.Controller.Shape
     {
         [SerializeField]
         private List<Cube> _cubes = null;
+
         public IList<Cube> Cubes => _cubes;
-        
+
         private float FallSpeed = 5f;
-        private ITetromino Tetromino { get; set; }
+        public ITetromino Tetromino { get; private set; }
+
 
         public void Init(ITetromino tetromino)
         {
             Tetromino = tetromino;
-            Tetromino.StartPosition(_cubes.Select(x => x.transform.position).ToList());
-            transform.position = Tetromino.GridPosition;
+            transform.position = Tetromino.StartPosition(_cubes.Select(x => x.transform.position).ToList());
             Tetromino.OnMove += TetrominoOnMove;
             Tetromino.OnRotate += TetrominoOnRotate;
+
+            for (int cubeIdx = 0; cubeIdx < _cubes.Count; cubeIdx++)
+            {
+                _cubes[cubeIdx].Init(Tetromino.BaseTetrominos[cubeIdx]);
+            }
         }
 
         private void TetrominoOnRotate(object sender, IList<Vector2> e)
         {
-            transform.Rotate(0,0,90f);   
+            transform.Rotate(0, 0, 90f);
         }
 
         private void TetrominoOnMove(object sender, Vector3 newPos)
         {
             transform.position += newPos;
-            Tetromino.SetPosition(transform.position);
         }
 
         public void End()
@@ -41,13 +45,49 @@ namespace Tettris.Controller.Shape
             Tetromino.OnRotate -= TetrominoOnRotate;
         }
 
-        public void ClearLine(int line)
+        public bool ClearLine(int line)
         {
-            IList<Cube> cubesToRemove = _cubes.Where(cube => line == Mathf.FloorToInt(cube.GridPosition.y)).ToList();
-            for (int cubeIdx = 0; cubeIdx < cubesToRemove.Count; cubeIdx++)
+            if (!_cubes.Any(cube => cube.GridPosition.y == line))
             {
-                _cubes.Remove(cubesToRemove[cubeIdx]);
+                return false;
             }
+
+            IList<Cube> cubesToRemove = new List<Cube>(); //Alguns lugares foi escolhido nao usar LINQ para clarificar a solucao
+            foreach (Cube cube in _cubes)
+            {
+                var yIndex = Mathf.FloorToInt(Mathf.Abs(cube.GridPosition.y));
+                if (yIndex == line)
+                {
+                    cubesToRemove.Add(cube);
+                }
+            }
+
+            foreach (var t in cubesToRemove)
+            {
+                _cubes.Remove(t);
+                Destroy(t.gameObject);
+            }
+
+            if (_cubes.Count <= 0)
+            {
+                Destroy(gameObject);
+                return false;
+            }
+
+            RowDown(line);
+            if (_cubes.All(cube => cube.GridPosition.y < 0))
+            {
+                Destroy(gameObject);
+                return false;
+            }
+
+            return true;
+        }
+
+        public void RowDown(int completedLine)
+        {
+            if (_cubes.Any(cube => cube.GridPosition.y > completedLine))
+                transform.position += Vector3.down;
         }
     }
 }

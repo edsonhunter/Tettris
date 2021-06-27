@@ -1,7 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
 using Tettris.Domain.Interface.Board;
 using Tettris.Domain.Interface.Tetronimo;
-using Tettris.Domain.Tetronimo;
 using UnityEngine;
 
 namespace Tettris.Domain.Board
@@ -17,11 +17,6 @@ namespace Tettris.Domain.Board
             Linhas = linhas;
             Colunas = colunas;
             Tiles = tiles;
-        }
-
-        public bool StartNewTetromino(IList<IBaseTetromino> startPosition)
-        {
-            return Move(startPosition);
         }
 
         public bool Move(IList<IBaseTetromino> moveTetrominos)
@@ -85,50 +80,100 @@ namespace Tettris.Domain.Board
             {
                 var linhaIdx = Mathf.FloorToInt(movedTetromino.GridPosition.y); //O Movimento lateral é baseado em X mas andamos nas colunas do vetor
                 var colunaIdx = Mathf.FloorToInt(movedTetromino.GridPosition.x); //O Movimento vertical é baseado em Y mas andamos nas linhas do vetor
-                var tile = Tiles[linhaIdx, colunaIdx];
-                tile.OccupySlot(movedTetromino);
+                Tiles[linhaIdx, colunaIdx].OccupySlot(movedTetromino);
             }
         }
 
-        public bool CompleteLine()
+        private bool CheckLines(int line)
         {
-            var completed = false;
-
-            IList<ITile> tilesToClear = new List<ITile>();
-            for (int x = 0; x < Linhas; x++)
+            for (int column = 0; column < Colunas; column++)
             {
-                for (int y = 0; y < Colunas; y++)
-                {
-                    if (!Tiles[x, y].Occupy)
-                    {
-                        break;
-                    }
+                if (!Tiles[line, column].Occupy)
+                    return false;
+            }
+            return true;
+        }
 
-                    tilesToClear.Add(Tiles[x, y]);
-                }
-
-                if (tilesToClear.Count <= 0)
+        public IList<int> CompleteLine()
+        {
+            IList<int> lines = new List<int>();
+            for (int line = 0; line < Linhas; line++)
+            {
+                if (CheckLines(line))
                 {
-                    continue;
-                }
-
-                if (tilesToClear.Count < Colunas)
-                {
-                    tilesToClear.Clear();
-                }
-                else
-                {
-                    foreach (ITile tile in tilesToClear)
-                    {
-                        completed = true;
-                        tile.ReleaseSlot();
-                    }
-
-                    tilesToClear.Clear();
+                    lines.Add(line);
+                    ClearRow(line);
+                    RowDown(line);
                 }
             }
-            
-            return completed;
+
+            return lines;
         }
+
+        private void ClearRow(int line)
+        {
+            for (int column = 0; column < Colunas; column++)
+            {
+                if (Tiles[line, column].Occupy)
+                {
+                    Tiles[line, column].ReleaseSlot();
+                }
+            }
+        }
+
+        private void RowDown(int lineDeleted)
+        {
+            for (int line = lineDeleted; line < Linhas; line++)
+            {
+                for (int column = 0; column < Colunas; column++)
+                {
+                    if (!Tiles[line, column].Occupy)
+                    {
+                        continue;
+                    }
+                    Tiles[line - 1, column].OccupySlot(Tiles[line, column].CurrentTetromino);
+                    Tiles[line, column].ReleaseSlot();
+                }
+            }
+        }
+        
+        // public IList<int> CompleteLine()
+        // {
+        //     IList<int> lines = new List<int>();
+        //     IList<ITile> tilesToClear = new List<ITile>();
+        //     for (int x = 0; x < Linhas; x++)
+        //     {
+        //         for (int y = 0; y < Colunas; y++)
+        //         {
+        //             if (!Tiles[x, y].Occupy)
+        //             {
+        //                 break;
+        //             }
+        //
+        //             tilesToClear.Add(Tiles[x, y]);
+        //         }
+        //
+        //         if (tilesToClear.Count <= 0)
+        //         {
+        //             continue;
+        //         }
+        //
+        //         if (tilesToClear.Count < Colunas)
+        //         {
+        //             tilesToClear.Clear();
+        //         }
+        //         else //limpa toda a linha antes de olhar a proxima
+        //         {
+        //             lines.Add(x);
+        //             foreach (ITile tile in tilesToClear)
+        //             {
+        //                 tile.ReleaseSlot();
+        //             }
+        //             tilesToClear.Clear();
+        //         }
+        //     }
+        //
+        //     return lines;
+        // }
     }
 }

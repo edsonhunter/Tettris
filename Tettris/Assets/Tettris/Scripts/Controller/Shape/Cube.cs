@@ -1,4 +1,4 @@
-using System;
+using Tettris.Domain.Interface.Tetronimo;
 using UnityEngine;
 
 namespace Tettris.Controller.Shape
@@ -9,9 +9,16 @@ namespace Tettris.Controller.Shape
         private Vector2 _gridPosition;
         public Vector2 GridPosition => _gridPosition;
 
+        private IBaseTetromino BaseTetromino { get; set; }
+        
         private void Update()
         {
             _gridPosition = transform.position;
+        }
+
+        public void Init(IBaseTetromino baseTetromino)
+        {
+            BaseTetromino = baseTetromino;
         }
     }
 }

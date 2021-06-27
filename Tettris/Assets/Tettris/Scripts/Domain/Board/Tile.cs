@@ -46,7 +46,6 @@ namespace Tettris.Domain.Board
             {
                 return;
             }
-
             CurrentTetromino = null;
             Occupy = false;
         }

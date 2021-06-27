@@ -10,7 +10,6 @@ namespace Tettris.Domain.Tetronimo
     {
         public Guid TetronimoId { get; }
         public IList<IBaseTetromino> BaseTetrominos => _baseTetrominos.AsReadOnly();
-        public Vector2 GridPosition { get; private set; }
         private List<IBaseTetromino> _baseTetrominos { get; set; }
         private EventHandler<Vector3> _onMove { get; set; }
         private EventHandler<IList<Vector2>> _onRotate { get; set; }
@@ -32,19 +31,14 @@ namespace Tettris.Domain.Tetronimo
             _baseTetrominos = new List<IBaseTetromino>(baseTetrominos);
         }
 
-        public void StartPosition(List<Vector3> startPositions)
+        public Vector3 StartPosition(List<Vector3> startPositions)
         {
-            GridPosition = startPositions.First();
-            
             for (int baseTetrominoIdx = 0; baseTetrominoIdx < _baseTetrominos.Count; baseTetrominoIdx++)
             {
                 _baseTetrominos[baseTetrominoIdx].Move(startPositions[baseTetrominoIdx]);
             }
-        }
-
-        public void SetPosition(Vector2 transformPosition)
-        {
-            GridPosition = transformPosition;
+            
+            return startPositions.First();
         }
 
         public void Rotate(IList<Vector2> newPos)

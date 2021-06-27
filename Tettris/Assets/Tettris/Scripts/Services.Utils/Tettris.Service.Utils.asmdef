@@ -1,0 +1,17 @@
+{
+    "name": "Tettris.Service.Utils",
+    "rootNamespace": "",
+    "references": [
+        "GUID:a943db303bc068848a977d762bb54fab",
+        "GUID:ad21cf4dd1dd68546810a6ec73daa4d0"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

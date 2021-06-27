@@ -7,7 +7,8 @@
         "Tettris.Domain",
         "Tettris.Domain.Interface",
         "Tettris.Controller",
-        "Tettris.Services"
+        "Tettris.Services",
+        "Tettris.Service.Utils"
     ],
     "includePlatforms": [
         "Editor"

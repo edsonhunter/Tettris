@@ -75,9 +75,8 @@ namespace DefaultNamespace
             var board = CreateBoard(10, 4);
             var tetromino = CreateLineTetromino();
             var futureTetromino = CreateLineTetromino();
-            board.StartNewTetromino(GameService.Move(futureTetromino.BaseTetrominos, Vector2.zero));
             var newPos = Vector2.up;
-            if (board.Move(GameService.Move(futureTetromino.BaseTetrominos, newPos)))
+            if (board.Move(Factory.Move(futureTetromino.BaseTetrominos, newPos)))
             {
                 tetromino.Move(newPos);
             }
@@ -92,11 +91,10 @@ namespace DefaultNamespace
             var chegouAoFim = false;
             var board = CreateBoard(10, 4);
             var tetromino = CreateLineTetromino();
-            board.StartNewTetromino(GameService.Move(tetromino.BaseTetrominos, Vector2.zero));
             for (int i = 0; i < 10; i++)
             {
                 var newPos = Vector2.up;
-                if (!board.Move(GameService.Move(tetromino.BaseTetrominos, newPos)))
+                if (!board.Move(Factory.Move(tetromino.BaseTetrominos, newPos)))
                 {
                     continue;
                 }
@@ -104,7 +102,7 @@ namespace DefaultNamespace
                 tetromino.Move(newPos);
             }
             board.FinishTurno(tetromino.BaseTetrominos);
-            Assert.True(board.CompleteLine());
+            Assert.True(board.CompleteLine().Count > 0);
         }
 
         [TestCase(true, TestName =  "Rotate dont complete line")]
@@ -113,12 +111,10 @@ namespace DefaultNamespace
         {
             var board = CreateBoard(10, 4);
             var tetromino = CreateLineTetromino();
-            board.StartNewTetromino(GameService.Move(tetromino.BaseTetrominos, Vector2.zero));
-
             for (int i = 0; i < 5; i++)
             {
                 var newPos = Vector2.up;
-                if (!board.Move(GameService.Move(tetromino.BaseTetrominos, newPos)))
+                if (!board.Move(Factory.Move(tetromino.BaseTetrominos, newPos)))
                 {
                     continue;
                 }
@@ -128,7 +124,7 @@ namespace DefaultNamespace
 
             if (rotate)
             {
-                var temporaryPos = GameService.Rotate(tetromino.BaseTetrominos, Quaternion.Euler(0, 0, 90f));
+                var temporaryPos = Factory.Rotate(tetromino.BaseTetrominos, Quaternion.Euler(0, 0, 90f));
                 if (board.Rotate(temporaryPos))
                 {
                     tetromino.Rotate(temporaryPos.Select(x => x.GridPosition).ToList());
@@ -138,7 +134,7 @@ namespace DefaultNamespace
             for (int i = 0; i < 5; i++)
             {
                 var newPos = Vector2.up;
-                if (!board.Move(GameService.Move(tetromino.BaseTetrominos, newPos)))
+                if (!board.Move(Factory.Move(tetromino.BaseTetrominos, newPos)))
                 {
                     continue;
                 }
@@ -147,7 +143,7 @@ namespace DefaultNamespace
             }
 
             board.FinishTurno(tetromino.BaseTetrominos);
-            Assert.AreEqual(!rotate, board.CompleteLine());
+            Assert.AreEqual(!rotate, board.CompleteLine().Count > 0);
         }
     }
 }

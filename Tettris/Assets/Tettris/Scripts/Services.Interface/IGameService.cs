@@ -12,10 +12,12 @@ namespace Tettris.Services.Interface
         float CurrentLevel { get; }
         bool Running { get; }
 
-        void CreateNewBoard();
+        void CreateNewBoard(int linhas, int colunas);
         ITetromino StartNewTetromino();
-        bool NextTurno();
         void Move(Vector3 newPos);
         void Rotate(Quaternion newPos);
+        bool NextTurno();
+        IList<int> CompleteLine();
+        bool GameOver();
     }
 }
