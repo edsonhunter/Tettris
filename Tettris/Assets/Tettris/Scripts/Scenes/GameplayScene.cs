@@ -1,9 +1,7 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Tettris.Controller.Shape;
-using Tettris.Domain.Interface.Board;
 using Tettris.Services.Interface;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -20,17 +18,32 @@ public class GameplayScene : MonoBehaviour
     [SerializeField]
     private GameObject _startPosition = null;
 
+    [SerializeField]
+    private GameObject _background = null;
+
+    [SerializeField]
+    private Camera _camera = null;
+
+    [SerializeField]
+    private int _lines = 0;
+
+    [SerializeField]
+    private int _columns = 0;
+
     private IGameService GameService { get; set; }
+    private IList<TetrominoController> TetrominosInPlay { get; set; }
 
     private void Awake()
     {
         GameService = new GameService();
+        GameService.CreateNewBoard(_lines, _columns);
     }
 
     private void Start()
     {
         StartNewTetromino();
         StartCoroutine(Turno());
+        TetrominosInPlay = new List<TetrominoController>();
     }
 
     private void StartNewTetromino()
@@ -66,13 +79,57 @@ public class GameplayScene : MonoBehaviour
     {
         while (GameService.Running)
         {
-            yield return new WaitForSeconds(0.1f);
-            
             if (!GameService.NextTurno())
             {
-                _currentTetromino.End();
+                if (CompletedLine())
+                {
+                    yield return new WaitForSeconds(0.5f);
+                }
+
+                if (GameService.GameOver())
+                {
+                    break;
+                }
+
                 StartNewTetromino();
             }
+
+            yield return new WaitForSeconds(1f);
         }
+
+        Debug.Log("GameOver");
+    }
+
+    private bool CompletedLine()
+    {
+        _currentTetromino.End();
+        TetrominosInPlay.Add(_currentTetromino);
+        var completedLines = GameService.CompleteLine();
+        if (completedLines.Count <= 0)
+        {
+            return false;
+        }
+
+        var tetrominosDestruidos = new List<TetrominoController>();
+        for (int lineIdx = 0; lineIdx < completedLines.Count; lineIdx++)
+        {
+            foreach (TetrominoController controller in TetrominosInPlay)
+            {
+                controller.RowDown(completedLines[lineIdx]);
+                controller.ClearLine(completedLines[lineIdx]);
+
+                if (controller.Cubes.Count <= 0)
+                {
+                    tetrominosDestruidos.Add(controller);
+                }
+            }
+        }
+
+        foreach (var destruido in tetrominosDestruidos)
+        {
+            TetrominosInPlay.Remove(destruido);
+        }
+
+        return true;
     }
 }
