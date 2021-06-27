@@ -155,6 +155,11 @@ MonoBehaviour:
   TetrominoPrefabs:
   - {fileID: 2066419263, guid: abc5bfdaa60ae694389c46cf620d9c5d, type: 3}
   - {fileID: -1225325119152125871, guid: b17085dc14ede734a8f3fcf22425b237, type: 3}
+  - {fileID: 5839103937747646713, guid: a13214fcc07c5d74f91d051e6e4d9361, type: 3}
+  - {fileID: 4075139166254733502, guid: be821e688caabcc49b7faf39279a7b7f, type: 3}
+  - {fileID: 3192204338736333215, guid: 9cc4a63d657de8444857502eccf49cf7, type: 3}
+  - {fileID: 2804975683577749067, guid: c702186e52591a94da459a7ef65d3392, type: 3}
+  - {fileID: 6966554872508909938, guid: 375da1d4bc6e1474cada2c457267674a, type: 3}
   _currentTetromino: {fileID: 0}
   _startPosition: {fileID: 1647208490}
 --- !u!4 &313724078

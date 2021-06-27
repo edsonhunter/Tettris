@@ -13,6 +13,7 @@ namespace Tettris.Domain.Interface.Tetronimo
         event EventHandler<IList<Vector2>> OnRotate;
 
         void StartPosition(List<Vector3> startPositions);
+        void SetPosition(Vector2 transformPosition);
         void Move(Vector2 newPos);
         void Rotate(IList<Vector2> newPos);
     }

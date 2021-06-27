@@ -34,16 +34,26 @@ public class GameService : IGameService
         return Tetromino;
     }
 
-    public void Turno()
+    public bool NexTurno()
     {
-        Move(Vector3.down);
+        var temporaryPos = Move(Tetromino.BaseTetrominos, Vector2.down);
+        if (Board.Move(temporaryPos))
+        {
+            Board.ClearOldState(Tetromino.BaseTetrominos, temporaryPos);
+            Tetromino.Move(Vector2.down);
+            return true;
+        }
+
+        Tetromino = null;
+        return false;
     }
     
     public void Move(Vector3 newPos)
     {
-        if (Board.Move(Move(Tetromino.BaseTetrominos, newPos)))
+        var temporaryPos = Move(Tetromino.BaseTetrominos, newPos);
+        if (Board.Move(temporaryPos))
         {
-            Board.ClearOldState(Tetromino.BaseTetrominos);
+            Board.ClearOldState(Tetromino.BaseTetrominos, temporaryPos);
             Tetromino.Move(newPos);
         }
     }
@@ -53,7 +63,7 @@ public class GameService : IGameService
         var temporaryPos = Rotate(Tetromino.BaseTetrominos, newPos);
         if(Board.Rotate(temporaryPos))
         {
-            Board.ClearOldState(Tetromino.BaseTetrominos);
+            Board.ClearOldState(Tetromino.BaseTetrominos, temporaryPos);
             Tetromino.Rotate(temporaryPos.Select(x => x.GridPosition).ToList());
         }
     }
@@ -84,20 +94,21 @@ public class GameService : IGameService
         return new Tetronimo(id, baseTetrominos);
     }
 
-    private static IList<IBaseTetromino> Move(IList<IBaseTetromino> currenTetrominos, Vector2 newPos)
+    public static IList<IBaseTetromino> Move(IList<IBaseTetromino> currenTetrominos, Vector2 newPos)
     {
         return currenTetrominos.Select(baseTetromino =>
                 new BaseTetromino(baseTetromino.TetronimoId, baseTetromino.GridPosition + newPos))
             .Cast<IBaseTetromino>().ToList();
     }
     
-    private static IList<IBaseTetromino> Rotate(IList<IBaseTetromino> currenTetrominos, Quaternion newPos)
+    public static IList<IBaseTetromino> Rotate(IList<IBaseTetromino> currenTetrominos, Quaternion newPos)
     {
         var rotatedTetromino = currenTetrominos.Select(baseTetromino =>
                 new BaseTetromino(baseTetromino.TetronimoId, baseTetromino.GridPosition))
             .Cast<IBaseTetromino>().ToList();
 
         var pivot = currenTetrominos.First().GridPosition;
+        
         foreach (IBaseTetromino baseTetromino in rotatedTetromino)
         {
             baseTetromino.Rotate(pivot, newPos);

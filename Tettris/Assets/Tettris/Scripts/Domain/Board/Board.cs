@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Tettris.Domain.Interface.Board;
 using Tettris.Domain.Interface.Tetronimo;
 using System.Linq;
+using System.Text;
 using Tettris.Domain.Tetronimo;
 using UnityEngine;
 
@@ -30,6 +31,7 @@ namespace Tettris.Domain.Board
         public bool Move(IList<IBaseTetromino> moveTetrominos)
         {
             var moved = false;
+            StringBuilder sb = new StringBuilder();
             foreach (var movedTetromino in moveTetrominos)
             {
                 var linhaIdx = Mathf.FloorToInt(movedTetromino.GridPosition.y); //O Movimento lateral é baseado em X mas andamos nas colunas do vetor
@@ -47,21 +49,25 @@ namespace Tettris.Domain.Board
                     moved = false;
                     break;
                 }
+
+                sb.Append($"Tile x: {tile.Position.x}, y: {tile.Position.y} | ");
                 moved = true;
             }
+            Debug.Log(sb.ToString());
             return moved;
         }
 
         public bool Rotate(IList<IBaseTetromino> moveTetrominos)
         {
             var moved = false;
+            StringBuilder sb = new StringBuilder();
             for (int cubeIdx = 0; cubeIdx < moveTetrominos.Count; cubeIdx++)
             {
                 var movedTetromino = moveTetrominos[cubeIdx];
                 var linhaIdx = Mathf.FloorToInt(movedTetromino.GridPosition.y); //O Movimento lateral é baseado em X mas andamos nas colunas do vetor
                 var colunaIdx = Mathf.FloorToInt(movedTetromino.GridPosition.x); //O Movimento vertical é baseado em Y mas andamos nas linhas do vetor
 
-                if (linhaIdx >= Linhas || colunaIdx >= Colunas)
+                if (linhaIdx >= Linhas || colunaIdx >= Colunas || linhaIdx < 0 || colunaIdx < 0)
                 {
                     moved = false;
                     break;
@@ -73,19 +79,29 @@ namespace Tettris.Domain.Board
                     moved = false;
                     break;
                 }
-                
+                sb.Append($"Tile x: {tile.Position.x}, y: {tile.Position.y} | ");
                 moved = true;
             }
+            Debug.Log(sb.ToString());
             return moved;
         }
 
-        public void ClearOldState(IList<IBaseTetromino> oldTetrominos)
+        public void ClearOldState(IList<IBaseTetromino> baseTetrominosToClear, IList<IBaseTetromino> newPositionBaseTetrominos)
         {
-            foreach (var oldPos in oldTetrominos)
+            for (int posIdx = 0; posIdx < baseTetrominosToClear.Count; posIdx++)
             {
-                var linhaIdx = Mathf.FloorToInt(oldPos.GridPosition.y); //O Movimento lateral é baseado em X mas andamos nas colunas do vetor
-                var colunaIdx = Mathf.FloorToInt(oldPos.GridPosition.x); //O Movimento vertical é baseado em Y mas andamos nas linhas do vetor
-
+                var newTile = newPositionBaseTetrominos[posIdx];
+                var oldTile = baseTetrominosToClear[posIdx];
+                //Se o tile a ser deletado esta na mesma posicao da nova lista
+                //Significa que nao podemos deletado
+                if (newTile.GridPosition.x == oldTile.GridPosition.x &&
+                    newTile.GridPosition.y == oldTile.GridPosition.y)
+                {
+                    continue;
+                }
+                
+                var linhaIdx = Mathf.FloorToInt(oldTile.GridPosition.y); //O Movimento lateral é baseado em X mas andamos nas colunas do vetor
+                var colunaIdx = Mathf.FloorToInt(oldTile.GridPosition.x); //O Movimento vertical é baseado em Y mas andamos nas linhas do vetor
                 var tile = Tiles[linhaIdx, colunaIdx];
                 tile.ReleaseSlot();
             }
@@ -96,9 +112,9 @@ namespace Tettris.Domain.Board
             var completed = false;
 
             IList<ITile> tilesToClear = new List<ITile>();
-            for (int x = 0; x < Colunas; x++)
+            for (int x = 0; x < Linhas; x++)
             {
-                for (int y = 0; y < Linhas; y++)
+                for (int y = 0; y < Colunas; y++)
                 {
                     if (!Tiles[x, y].Occupy)
                     {
@@ -113,7 +129,7 @@ namespace Tettris.Domain.Board
                     continue;
                 }
 
-                if (tilesToClear.Count < Linhas)
+                if (tilesToClear.Count < Colunas)
                 {
                     tilesToClear.Clear();
                 }

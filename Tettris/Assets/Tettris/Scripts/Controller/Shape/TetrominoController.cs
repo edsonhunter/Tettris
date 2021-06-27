@@ -13,7 +13,6 @@ namespace Tettris.Controller.Shape
         
         private float FallSpeed = 5f;
         private ITetromino Tetromino { get; set; }
-        
 
         public void Init(ITetromino tetromino)
         {
@@ -32,6 +31,7 @@ namespace Tettris.Controller.Shape
         private void TetrominoOnMove(object sender, Vector3 newPos)
         {
             transform.position += newPos;
+            Tetromino.SetPosition(transform.position);
         }
 
         public void End()

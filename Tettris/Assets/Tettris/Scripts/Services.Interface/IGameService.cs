@@ -14,7 +14,7 @@ namespace Tettris.Services.Interface
 
         void CreateNewBoard();
         ITetromino StartNewTetromino();
-        void Turno();
+        bool NexTurno();
         void Move(Vector3 newPos);
         void Rotate(Quaternion newPos);
     }

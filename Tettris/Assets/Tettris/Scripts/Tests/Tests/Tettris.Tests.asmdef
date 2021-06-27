@@ -6,7 +6,8 @@
         "UnityEditor.TestRunner",
         "Tettris.Domain",
         "Tettris.Domain.Interface",
-        "Tettris.Controller"
+        "Tettris.Controller",
+        "Tettris.Services"
     ],
     "includePlatforms": [
         "Editor"

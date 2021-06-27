@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Tettris.Controller.Shape;
+using Tettris.Domain.Interface.Board;
 using Tettris.Services.Interface;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -50,25 +51,28 @@ public class GameplayScene : MonoBehaviour
         {
             GameService.Move(Vector3.right);
         }
+        else if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            GameService.Move(Vector3.down);
+        }
 
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            GameService.Rotate(Quaternion.Euler(0,0,-90));
+            GameService.Rotate(Quaternion.Euler(0, 0, 90f));
         }
     }
-    
+
     private IEnumerator Turno()
     {
         while (GameService.Running)
         {
             yield return new WaitForSeconds(5f);
-            GameService.Turno();
-
-            if (_currentTetromino.transform.position.y < 1)
+            
+            if (!GameService.NexTurno())
             {
                 _currentTetromino.End();
                 StartNewTetromino();
-            } 
+            }
         }
     }
 }

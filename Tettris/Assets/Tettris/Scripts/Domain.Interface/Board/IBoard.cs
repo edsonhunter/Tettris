@@ -11,6 +11,6 @@ namespace Tettris.Domain.Interface.Board
         bool Move(IList<IBaseTetromino> movedTetrominos);
         bool Rotate(IList<IBaseTetromino> moveTetrominos);
         bool CompleteLine();
-        void ClearOldState(IList<IBaseTetromino> oldTetrominos);
+        void ClearOldState(IList<IBaseTetromino> baseTetrominosToClear, IList<IBaseTetromino> newPositionBaseTetrominos);
     }
 }
