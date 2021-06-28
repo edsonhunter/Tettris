@@ -6,7 +6,9 @@ using Tettris.Manager.Interface;
 using Tettris.Scenes;
 using Tettris.Scenes.Interface;
 using Tettris.Services.Interface;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
@@ -30,30 +32,49 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
     private IGameService GameService { get; set; }
     private IList<TetrominoController> TetrominosInPlay { get; set; }
 
+    [SerializeField]
+    private TextMeshProUGUI _score = null;
+    private TextMeshProUGUI Score => _score;
+
+    [SerializeField]
+    private Button _pauseButton = null;
+    private Button PauseButton => _pauseButton;
+
+    private int CurrentScore { get; set; }
+    
     protected override void Loading(Action<bool> loaded)
     {
         GameService = GetService<IGameService>();
         GameService.CreateNewBoard(SceneData.Altura, SceneData.Largura);
+        PauseButton.onClick.AddListener(OnPauseClick);
+        
         loaded(true);
     }
     
     protected override void Loaded()
     {
-        StartNewTetromino();
+        NextRound();
         StartCoroutine(Turno());
         TetrominosInPlay = new List<TetrominoController>();
+        CurrentScore = 0;
+        _score.text = $"SCORE: {CurrentScore.ToString()}";
     }
 
-    private void StartNewTetromino()
+    private void NextRound()
     {
         _currentTetromino = null;
-        var tetromino = GameService.StartNewTetromino();
+        var tetromino = GameService.NextRound();
         _currentTetromino = Instantiate(TetrominoPrefabs[Random.Range(0, TetrominoPrefabs.Count)], _startPosition.transform.position, Quaternion.identity);
         _currentTetromino.Init(tetromino);
     }
 
     protected override void Loop()
     {
+        if (!GameService.Running)
+        {
+            return;
+        }
+        
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             GameService.Move(Vector3.left);
@@ -62,7 +83,8 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
         {
             GameService.Move(Vector3.right);
         }
-        else if (Input.GetKeyDown(KeyCode.DownArrow))
+        
+        if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             GameService.Move(Vector3.down);
         }
@@ -75,26 +97,21 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
 
     private IEnumerator Turno()
     {
-        while (GameService.Running)
+        while (GameService.GameOver())
         {
             if (!GameService.NextTurno())
             {
                 if (CompletedLine())
                 {
+                    _score.text = $"SCORE: {CurrentScore.ToString()}";
                     yield return new WaitForSeconds(0.5f);
                 }
 
-                if (GameService.GameOver())
-                {
-                    break;
-                }
-
-                StartNewTetromino();
+                NextRound();
             }
 
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(GameService.Speed());
 
-            break;
         }
 
         GetManager<ISceneManager>().LoadSceneOverlay(new EndGameData(200));
@@ -103,6 +120,7 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
     private bool CompletedLine()
     {
         _currentTetromino.End();
+        
         TetrominosInPlay.Add(_currentTetromino);
         var completedLines = GameService.CompleteLine();
         if (completedLines.Count <= 0)
@@ -111,12 +129,15 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
         }
 
         var tetrominosDestruidos = new List<TetrominoController>();
-        for (int lineIdx = 0; lineIdx < completedLines.Count; lineIdx++)
+        foreach (var lines in completedLines)
         {
-            foreach (TetrominoController controller in TetrominosInPlay)
+            foreach (var controller in TetrominosInPlay)
             {
-                controller.ClearLine(completedLines[lineIdx]);
-                controller.RowDown(completedLines[lineIdx]);
+                if (controller.ClearLine(lines))
+                {
+                    CurrentScore += 100;
+                }
+                controller.RowDown(lines);
 
                 if (controller.Cubes.Count <= 0)
                 {
@@ -131,6 +152,11 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
         }
 
         return true;
+    }
+
+    private void OnPauseClick()
+    {
+        GetManager<ISceneManager>().LoadSceneOverlay(new InGameMenuData());
     }
 
     public class GamePlayData : ISceneData

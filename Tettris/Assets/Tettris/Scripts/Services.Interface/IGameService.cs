@@ -13,11 +13,12 @@ namespace Tettris.Services.Interface
         bool Running { get; }
 
         void CreateNewBoard(int linhas, int colunas);
-        ITetromino StartNewTetromino();
+        ITetromino NextRound();
         void Move(Vector3 newPos);
         void Rotate(Quaternion newPos);
         bool NextTurno();
         IList<int> CompleteLine();
         bool GameOver();
+        float Speed();
     }
 }

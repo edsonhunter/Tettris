@@ -9,7 +9,7 @@ namespace Tettris.Domain.Interface.Board
 
         bool Move(IList<IBaseTetromino> movedTetrominos);
         bool Rotate(IList<IBaseTetromino> moveTetrominos);
-        void FinishTurno(IList<IBaseTetromino> tetrominoBaseTetrominos);
+        bool FinishTurno(IList<IBaseTetromino> tetrominoBaseTetrominos);
         IList<int> CompleteLine();
     }
 }

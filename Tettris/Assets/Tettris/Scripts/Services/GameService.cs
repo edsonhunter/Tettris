@@ -11,18 +11,20 @@ public class GameService : IGameService
     public ITetromino Tetromino { get; private set; }
     public float CurrentLevel { get; private set; }
     public bool Running { get; private set; }
-
+    
     public GameService()
     {
     }
 
     public void CreateNewBoard(int linhas, int colunas)
     {
+        CurrentLevel = 1;
         Running = true;
+        Tetromino = null;
         Board = Factory.CreateBoard(linhas, colunas);
     }
 
-    public ITetromino StartNewTetromino()
+    public ITetromino NextRound()
     {
         CurrentLevel++;
         Tetromino = Factory.CreateTetromino();
@@ -70,7 +72,12 @@ public class GameService : IGameService
             return true;
         }
 
-        Board.FinishTurno(Tetromino.BaseTetrominos);
+        //Falhou em descer, seta a posicao atual como posicao no tabuleiro
+        if (!Board.FinishTurno(Tetromino.BaseTetrominos))
+        {
+            Running = false;
+        }
+        
         return false;
     }
 
@@ -79,8 +86,13 @@ public class GameService : IGameService
         return Board.CompleteLine();
     }
 
+    public float Speed()
+    {
+        return 5 / CurrentLevel;
+    }
+
     public bool GameOver()
     {
-        return false;
+        return Running;
     }
 }

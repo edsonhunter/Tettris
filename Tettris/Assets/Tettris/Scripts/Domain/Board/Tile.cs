@@ -34,10 +34,15 @@ namespace Tettris.Domain.Board
             return true;
         }
 
-        public void OccupySlot(IBaseTetromino tetromino)
+        public bool OccupySlot(IBaseTetromino tetromino)
         {
+            if (Occupy)
+            {
+                return false;
+            }
             CurrentTetromino = tetromino;
             Occupy = true;
+            return true;
         }
 
         public void ReleaseSlot()

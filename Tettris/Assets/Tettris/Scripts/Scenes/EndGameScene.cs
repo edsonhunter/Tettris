@@ -13,7 +13,7 @@ namespace Tettris.Scenes
     {
         [SerializeField]
         private TextMeshProUGUI _score = null;
-        public TextMeshProUGUI Score => _score;
+        private TextMeshProUGUI Score => _score;
 
         [SerializeField]
         private Button _closeButton = null;
@@ -21,13 +21,15 @@ namespace Tettris.Scenes
         
         protected override void Loading(Action<bool> loaded)
         {
-            Score.text = SceneData.Score.ToString();
+            Score.text = $"FINAL\nSCORE:\n{SceneData.Score.ToString()}";
             CloseButton.onClick.AddListener(OnCloseClick);
+            loaded(true);
         }
 
         private void OnCloseClick()
         {
             GetManager<ISceneManager>().UnloadOverlay(this);
+            GetManager<ISceneManager>().LoadScene(new MainMenuData());
         }
     }
 

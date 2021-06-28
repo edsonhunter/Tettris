@@ -74,14 +74,19 @@ namespace Tettris.Domain.Board
             return moved;
         }
 
-        public void FinishTurno(IList<IBaseTetromino> tetrominoBaseTetrominos)
+        public bool FinishTurno(IList<IBaseTetromino> tetrominoBaseTetrominos)
         {
             foreach (var movedTetromino in tetrominoBaseTetrominos)
             {
                 var linhaIdx = Mathf.FloorToInt(movedTetromino.GridPosition.y); //O Movimento lateral é baseado em X mas andamos nas colunas do vetor
                 var colunaIdx = Mathf.FloorToInt(movedTetromino.GridPosition.x); //O Movimento vertical é baseado em Y mas andamos nas linhas do vetor
-                Tiles[linhaIdx, colunaIdx].OccupySlot(movedTetromino);
+                if (!Tiles[linhaIdx, colunaIdx].OccupySlot(movedTetromino))
+                {
+                    return false;
+                }
             }
+
+            return true;
         }
 
         private bool CheckLines(int line)
