@@ -18,7 +18,7 @@ public class GameService : IGameService
 
     public void CreateNewBoard(int linhas, int colunas)
     {
-        CurrentLevel = 1;
+        CurrentLevel = 0;
         Running = true;
         Tetromino = null;
         Board = Factory.CreateBoard(linhas, colunas);
@@ -88,7 +88,7 @@ public class GameService : IGameService
 
     public float Speed()
     {
-        return 5 / CurrentLevel;
+        return 5 / CurrentLevel + 1;
     }
 
     public bool GameOver()

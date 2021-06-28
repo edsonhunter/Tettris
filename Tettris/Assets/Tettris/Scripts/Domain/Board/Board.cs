@@ -27,6 +27,11 @@ namespace Tettris.Domain.Board
                 var linhaIdx = Mathf.FloorToInt(movedTetromino.GridPosition.y); //O Movimento lateral é baseado em X mas andamos nas colunas do vetor
                 var colunaIdx = Mathf.FloorToInt(movedTetromino.GridPosition.x); //O Movimento vertical é baseado em Y mas andamos nas linhas do vetor
 
+                if (colunaIdx < 0 && colunaIdx > -1)
+                {
+                    colunaIdx = 0;
+                }
+                
                 if (linhaIdx >= Linhas || colunaIdx >= Colunas || linhaIdx < 0 || colunaIdx < 0)
                 {
                     moved = false;

@@ -35,6 +35,10 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
     [SerializeField]
     private TextMeshProUGUI _score = null;
     private TextMeshProUGUI Score => _score;
+    
+    [SerializeField]
+    private TextMeshProUGUI _level = null;
+    private TextMeshProUGUI Level => _score;
 
     [SerializeField]
     private Button _pauseButton = null;
@@ -58,6 +62,7 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
         StartCoroutine(Turno());
         TetrominosInPlay = new List<TetrominoController>();
         CurrentScore = 0;
+        _level.text = $"LEVEL: {GameService.CurrentLevel}";
         _score.text = $"SCORE: {CurrentScore.ToString()}";
     }
 
@@ -104,11 +109,12 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
             {
                 if (CompletedLine())
                 {
-                    _score.text = $"SCORE: {CurrentScore.ToString()}";
                     yield return new WaitForSeconds(0.5f);
+                    _score.text = $"SCORE: {CurrentScore.ToString()}";
                 }
 
                 NextRound();
+                _level.text = $"LEVEL: {GameService.CurrentLevel}";
             }
 
             yield return new WaitForSeconds(GameService.Speed());
