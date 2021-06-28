@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Tettris.Services.Interface
 {
-    public interface IGameService
+    public interface IGameService : IService
     {
         IBoard Board { get; }
         ITetromino Tetromino { get; }

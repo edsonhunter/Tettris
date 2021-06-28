@@ -1,18 +1,31 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
+using Tettris.Manager.Interface;
+using Tettris.Scenes.Interface;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class MainMenuScene : MonoBehaviour
+namespace Tettris.Scenes
 {
-    // Start is called before the first frame update
-    void Start()
+    public class MainMenuScene : BaseScene<MainMenuData>
     {
-        
+        [SerializeField]
+        private Button _playButton = null;
+        public Button PlayButton => _playButton;
+
+        protected override void Loading(Action<bool> loaded)
+        {
+            PlayButton.onClick.AddListener(OnPlayClick);
+        }
+
+        private void OnPlayClick()
+        {
+            GetManager<ISceneManager>().LoadScene(new GameplayScene.GamePlayData(20,10));
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    public class MainMenuData : ISceneData
     {
         
     }
 }
+

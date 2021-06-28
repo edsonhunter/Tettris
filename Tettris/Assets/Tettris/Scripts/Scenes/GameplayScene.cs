@@ -1,12 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Tettris.Controller.Shape;
+using Tettris.Manager.Interface;
+using Tettris.Scenes;
+using Tettris.Scenes.Interface;
 using Tettris.Services.Interface;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class GameplayScene : MonoBehaviour
+public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
 {
     [Header("")]
     [SerializeField]
@@ -24,22 +27,17 @@ public class GameplayScene : MonoBehaviour
     [SerializeField]
     private Camera _camera = null;
 
-    [SerializeField]
-    private int _lines = 0;
-
-    [SerializeField]
-    private int _columns = 0;
-
     private IGameService GameService { get; set; }
     private IList<TetrominoController> TetrominosInPlay { get; set; }
 
-    private void Awake()
+    protected override void Loading(Action<bool> loaded)
     {
-        GameService = new GameService();
-        GameService.CreateNewBoard(_lines, _columns);
+        GameService = GetService<IGameService>();
+        GameService.CreateNewBoard(SceneData.Altura, SceneData.Largura);
+        loaded(true);
     }
-
-    private void Start()
+    
+    protected override void Loaded()
     {
         StartNewTetromino();
         StartCoroutine(Turno());
@@ -54,7 +52,7 @@ public class GameplayScene : MonoBehaviour
         _currentTetromino.Init(tetromino);
     }
 
-    private void Update()
+    protected override void Loop()
     {
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
@@ -95,9 +93,11 @@ public class GameplayScene : MonoBehaviour
             }
 
             yield return new WaitForSeconds(1f);
+
+            break;
         }
 
-        Debug.Log("GameOver");
+        GetManager<ISceneManager>().LoadSceneOverlay(new EndGameData(200));
     }
 
     private bool CompletedLine()
@@ -131,5 +131,17 @@ public class GameplayScene : MonoBehaviour
         }
 
         return true;
+    }
+
+    public class GamePlayData : ISceneData
+    {
+        public int Altura { get; private set; }
+        public int Largura { get; private set; }
+
+        public GamePlayData(int altura, int largura)
+        {
+            Altura = altura;
+            Largura = largura;
+        }
     }
 }

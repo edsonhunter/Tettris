@@ -1,6 +1,15 @@
-using UnityEngine;
+using Tettris.Scenes.Interface;
 
-public class InGameMenuScene : MonoBehaviour
+namespace Tettris.Scenes
 {
+    public class InGameMenuScene : BaseScene<InGameMenuData>
+    {
     
+    }
+
+    public class InGameMenuData : ISceneData
+    {
+    
+    }    
 }
+
