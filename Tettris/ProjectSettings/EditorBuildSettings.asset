@@ -4,5 +4,20 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Tettris/Scenes/LoaderScene.unity
+    guid: c9f0fe08b2830a640a2d6c20d62605da
+  - enabled: 1
+    path: Assets/Tettris/Scenes/GameplayScene.unity
+    guid: de2e7e7490635be439971a396a0b81aa
+  - enabled: 1
+    path: Assets/Tettris/Scenes/MainMenuScene.unity
+    guid: 030f614ae64a9884b9becdb07b3dd6aa
+  - enabled: 1
+    path: Assets/Tettris/Scenes/InGameMenu.unity
+    guid: 37ba31a8fb8187c42924810fefb28f9f
+  - enabled: 1
+    path: Assets/Tettris/Scenes/EndGameScene.unity
+    guid: 3f1aa270a1575734796054403739d9f2
   m_configObjects: {}
