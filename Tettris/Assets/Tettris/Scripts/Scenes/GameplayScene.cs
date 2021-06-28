@@ -115,8 +115,8 @@ public class GameplayScene : MonoBehaviour
         {
             foreach (TetrominoController controller in TetrominosInPlay)
             {
-                controller.RowDown(completedLines[lineIdx]);
                 controller.ClearLine(completedLines[lineIdx]);
+                controller.RowDown(completedLines[lineIdx]);
 
                 if (controller.Cubes.Count <= 0)
                 {

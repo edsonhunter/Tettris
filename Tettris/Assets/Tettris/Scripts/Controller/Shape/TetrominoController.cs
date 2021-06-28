@@ -51,12 +51,12 @@ namespace Tettris.Controller.Shape
             {
                 return false;
             }
-
-            IList<Cube> cubesToRemove = new List<Cube>(); //Alguns lugares foi escolhido nao usar LINQ para clarificar a solucao
-            foreach (Cube cube in _cubes)
+            
+            IList<Cube> cubesToRemove = new List<Cube>();
+            foreach (var cube in _cubes)
             {
                 var yIndex = Mathf.FloorToInt(Mathf.Abs(cube.GridPosition.y));
-                if (yIndex == line)
+                if (yIndex == line || yIndex < 0)
                 {
                     cubesToRemove.Add(cube);
                 }
@@ -74,20 +74,15 @@ namespace Tettris.Controller.Shape
                 return false;
             }
 
-            RowDown(line);
-            if (_cubes.All(cube => cube.GridPosition.y < 0))
-            {
-                Destroy(gameObject);
-                return false;
-            }
-
             return true;
         }
 
-        public void RowDown(int completedLine)
+        public void RowDown(int line)
         {
-            if (_cubes.Any(cube => cube.GridPosition.y > completedLine))
+            if (_cubes.Any(cube => cube.GridPosition.y > line))
+            {
                 transform.position += Vector3.down;
+            }
         }
     }
 }
