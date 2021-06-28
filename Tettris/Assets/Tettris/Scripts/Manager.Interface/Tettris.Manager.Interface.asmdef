@@ -1,0 +1,17 @@
+{
+    "name": "Tettris.Manager.Interface",
+    "rootNamespace": "",
+    "references": [
+        "GUID:f70a10174bc8e5c45a8599525e07eb90",
+        "GUID:da46ee1ffb48d0d4e91bdbad04a8bec6"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,16 @@
+{
+    "name": "Tettris.Controller",
+    "rootNamespace": "",
+    "references": [
+        "GUID:ad21cf4dd1dd68546810a6ec73daa4d0"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -2,7 +2,8 @@
     "name": "Tettris.Domain",
     "rootNamespace": "",
     "references": [
-        "GUID:ad21cf4dd1dd68546810a6ec73daa4d0"
+        "GUID:ad21cf4dd1dd68546810a6ec73daa4d0",
+        "GUID:29f05efdd0728a344afd1bc365409e77"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
