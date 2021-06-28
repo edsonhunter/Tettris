@@ -32,11 +32,13 @@ namespace Tettris.Scenes
 
         protected override void Loaded()
         {
+            StartCoroutine(GetManager<IAudioManager>().FadeIn(0.1f));
             Time.timeScale = 0;
         }
 
         protected override void Unload()
         {
+            StartCoroutine(GetManager<IAudioManager>().FadeIn(1f));
             Time.timeScale = 1;
         }
 

@@ -53,6 +53,7 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
     
     protected override void Loaded()
     {
+        StartCoroutine(GetManager<IAudioManager>().FadeIn(2f));
         NextRound();
         StartCoroutine(Turno());
         TetrominosInPlay = new List<TetrominoController>();

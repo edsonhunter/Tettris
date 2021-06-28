@@ -65,9 +65,9 @@ namespace Tettris.Manager
         
         public void UnloadOverlay(IBaseScene overlay)
         {
+            overlay.FireUnload();
             UnitySceneManager.UnloadSceneAsync(UnitySceneManager.GetActiveScene()).completed += (operation) =>
             {
-                overlay.FireUnload();
                 ActiveScene.SetActiveScene(true);
             };
         }

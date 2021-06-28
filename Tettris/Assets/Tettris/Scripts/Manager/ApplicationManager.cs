@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Tettris.Manager.Interface;
 using Tettris.Scenes;
+using Tettris.Scripts.Services;
 using Tettris.Services.Interface;
 using UnityEngine;
 
@@ -14,6 +15,8 @@ namespace Tettris.Manager
         private SceneManager _sceneManager = null;
         [SerializeField]
         private LoopManager _loopManager = null;
+        [SerializeField]
+        private AudioManager _audioManager = null;
 
         private IDictionary<Type, IManager> Managers { get; set; }
         
@@ -22,6 +25,7 @@ namespace Tettris.Manager
         #region Services
         private IDictionary<Type, IService> Services { get; set; }
         private IGameService GameService { get; set; }
+        private ISettingsService SettingsService { get; set; }
         #endregion
         
         private void Awake()
@@ -37,13 +41,17 @@ namespace Tettris.Manager
         {
             GameService = new GameService();
             RegisterService<IGameService>(GameService);
+            SettingsService = new SettingsService();
+            RegisterService<ISettingsService>(SettingsService);
         }
         
         private void BootManager()
         {
             _sceneManager.Init(this);
+            _audioManager.Init(this);
             RegisterManager<ISceneManager>(_sceneManager);
             RegisterManager<ILoopManager>(_loopManager);
+            RegisterManager<IAudioManager>(_audioManager);
         }
         
         private void RegisterService<T>(IService service) where T : IService

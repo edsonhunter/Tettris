@@ -26,10 +26,20 @@ namespace Tettris.Scenes
             loaded(true);
         }
 
+        protected override void Loaded()
+        {
+            StartCoroutine(GetManager<IAudioManager>().FadeIn(0.1f));
+        }
+
         private void OnCloseClick()
         {
             GetManager<ISceneManager>().UnloadOverlay(this);
             GetManager<ISceneManager>().LoadScene(new MainMenuData());
+        }
+
+        protected override void Unload()
+        {
+            StartCoroutine(GetManager<IAudioManager>().FadeIn(0f));
         }
     }
 

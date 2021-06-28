@@ -1,6 +1,7 @@
 using System;
 using Tettris.Manager.Interface;
 using Tettris.Scenes.Interface;
+using Tettris.Services.Interface;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,6 +16,12 @@ namespace Tettris.Scenes
         protected override void Loading(Action<bool> loaded)
         {
             PlayButton.onClick.AddListener(OnPlayClick);
+            loaded(true);
+        }
+
+        protected override void Loaded()
+        {
+            StartCoroutine(GetManager<IAudioManager>().FadeIn(0.1f));
         }
 
         private void OnPlayClick()
