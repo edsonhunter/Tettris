@@ -9,12 +9,10 @@ namespace Tettris.Controller.Shape
     {
         [SerializeField]
         private List<Cube> _cubes = null;
-
         public IList<Cube> Cubes => _cubes;
 
         private float FallSpeed = 5f;
         public ITetromino Tetromino { get; private set; }
-
 
         public void Init(ITetromino tetromino)
         {
@@ -51,21 +49,16 @@ namespace Tettris.Controller.Shape
             {
                 return false;
             }
-            
-            IList<Cube> cubesToRemove = new List<Cube>();
-            foreach (var cube in _cubes)
+
+            for (int cubeIdx = _cubes.Count - 1; cubeIdx >= 0; cubeIdx--)
             {
+                var cube = _cubes[cubeIdx];
                 var yIndex = Mathf.FloorToInt(Mathf.Abs(cube.GridPosition.y));
                 if (yIndex == line || yIndex < 0)
                 {
-                    cubesToRemove.Add(cube);
+                    _cubes.RemoveAt(cubeIdx);
+                    Destroy(cube.gameObject);
                 }
-            }
-
-            foreach (var t in cubesToRemove)
-            {
-                _cubes.Remove(t);
-                Destroy(t.gameObject);
             }
 
             if (_cubes.Count <= 0)

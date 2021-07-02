@@ -54,9 +54,8 @@ namespace Tettris.Domain.Board
         public bool Rotate(IList<IBaseTetromino> moveTetrominos)
         {
             var moved = false;
-            for (int cubeIdx = 0; cubeIdx < moveTetrominos.Count; cubeIdx++)
+            foreach (var movedTetromino in moveTetrominos)
             {
-                var movedTetromino = moveTetrominos[cubeIdx];
                 var linhaIdx = Mathf.FloorToInt(movedTetromino.GridPosition.y); //O Movimento lateral é baseado em X mas andamos nas colunas do vetor
                 var colunaIdx = Mathf.FloorToInt(movedTetromino.GridPosition.x); //O Movimento vertical é baseado em Y mas andamos nas linhas do vetor
 

@@ -32,7 +32,7 @@ namespace Tettris.Manager
             if (Registered)
             {
                 if(BaseScene.ActiveScene)
-                BaseScene.FireLoop();
+                    BaseScene.FireLoop();
             }
         }
     }

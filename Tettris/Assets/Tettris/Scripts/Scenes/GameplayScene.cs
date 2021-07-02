@@ -135,11 +135,11 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
             return false;
         }
 
-        var tetrominosDestruidos = new List<TetrominoController>();
         foreach (var lines in completedLines)
         {
-            foreach (var controller in TetrominosInPlay)
+            for (int tetrominoIdx = TetrominosInPlay.Count - 1; tetrominoIdx >= 0; tetrominoIdx--)
             {
+                var controller = TetrominosInPlay[tetrominoIdx];
                 if (controller.ClearLine(lines))
                 {
                     CurrentScore += 100;
@@ -148,14 +148,9 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
 
                 if (controller.Cubes.Count <= 0)
                 {
-                    tetrominosDestruidos.Add(controller);
+                    TetrominosInPlay.RemoveAt(tetrominoIdx);
                 }
             }
-        }
-
-        foreach (var destruido in tetrominosDestruidos)
-        {
-            TetrominosInPlay.Remove(destruido);
         }
 
         return true;
