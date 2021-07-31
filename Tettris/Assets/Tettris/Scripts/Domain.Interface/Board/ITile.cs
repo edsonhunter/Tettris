@@ -6,7 +6,7 @@ namespace Tettris.Domain.Interface.Board
     public interface ITile
     {
         Vector2 Position { get; }
-        bool Occupy { get; }
+        bool Occupied { get; }
         IBaseTetromino CurrentTetromino { get; }
 
         bool CheckSlot(IBaseTetromino tetromino);

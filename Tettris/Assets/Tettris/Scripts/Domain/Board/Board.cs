@@ -97,7 +97,7 @@ namespace Tettris.Domain.Board
         {
             for (int column = 0; column < Colunas; column++)
             {
-                if (!Tiles[line, column].Occupy)
+                if (!Tiles[line, column].Occupied)
                     return false;
             }
             return true;
@@ -123,7 +123,7 @@ namespace Tettris.Domain.Board
         {
             for (int column = 0; column < Colunas; column++)
             {
-                if (Tiles[line, column].Occupy)
+                if (Tiles[line, column].Occupied)
                 {
                     Tiles[line, column].ReleaseSlot();
                 }
@@ -136,7 +136,7 @@ namespace Tettris.Domain.Board
             {
                 for (int column = 0; column < Colunas; column++)
                 {
-                    if (!Tiles[line, column].Occupy)
+                    if (!Tiles[line, column].Occupied)
                     {
                         continue;
                     }
@@ -145,44 +145,5 @@ namespace Tettris.Domain.Board
                 }
             }
         }
-        
-        // public IList<int> CompleteLine()
-        // {
-        //     IList<int> lines = new List<int>();
-        //     IList<ITile> tilesToClear = new List<ITile>();
-        //     for (int x = 0; x < Linhas; x++)
-        //     {
-        //         for (int y = 0; y < Colunas; y++)
-        //         {
-        //             if (!Tiles[x, y].Occupy)
-        //             {
-        //                 break;
-        //             }
-        //
-        //             tilesToClear.Add(Tiles[x, y]);
-        //         }
-        //
-        //         if (tilesToClear.Count <= 0)
-        //         {
-        //             continue;
-        //         }
-        //
-        //         if (tilesToClear.Count < Colunas)
-        //         {
-        //             tilesToClear.Clear();
-        //         }
-        //         else //limpa toda a linha antes de olhar a proxima
-        //         {
-        //             lines.Add(x);
-        //             foreach (ITile tile in tilesToClear)
-        //             {
-        //                 tile.ReleaseSlot();
-        //             }
-        //             tilesToClear.Clear();
-        //         }
-        //     }
-        //
-        //     return lines;
-        // }
     }
 }

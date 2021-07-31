@@ -8,7 +8,7 @@ namespace Tettris.Domain.Board
     public class Tile : ITile
     {
         public Vector2 Position { get; private set; }
-        public bool Occupy { get; private set; }
+        public bool Occupied { get; private set; }
         public IBaseTetromino CurrentTetromino { get; private set; }
 
         public Tile(Vector2 position)
@@ -19,7 +19,7 @@ namespace Tettris.Domain.Board
 
         public bool CheckSlot(IBaseTetromino tetromino)
         {
-            if (Occupy)
+            if (Occupied)
             {
                 if (CurrentTetromino == null)
                 {
@@ -36,23 +36,23 @@ namespace Tettris.Domain.Board
 
         public bool OccupySlot(IBaseTetromino tetromino)
         {
-            if (Occupy)
+            if (Occupied)
             {
                 return false;
             }
             CurrentTetromino = tetromino;
-            Occupy = true;
+            Occupied = true;
             return true;
         }
 
         public void ReleaseSlot()
         {
-            if (!Occupy)
+            if (!Occupied)
             {
                 return;
             }
             CurrentTetromino = null;
-            Occupy = false;
+            Occupied = false;
         }
     }
 }

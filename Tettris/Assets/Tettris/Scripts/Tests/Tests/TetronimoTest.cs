@@ -74,15 +74,14 @@ namespace DefaultNamespace
         {
             var board = CreateBoard(10, 4);
             var tetromino = CreateLineTetromino();
-            var futureTetromino = CreateLineTetromino();
-            var newPos = Vector2.up;
-            if (board.Move(Factory.Move(futureTetromino.BaseTetrominos, newPos)))
+            var direction = Vector2.up;
+            if (board.Move(Factory.Move(tetromino.BaseTetrominos, direction)))
             {
-                tetromino.Move(newPos);
+                tetromino.Move(direction);
             }
 
             board.FinishTurno(tetromino.BaseTetrominos);
-            Assert.True(board.Tiles[1, 1].Occupy);
+            Assert.True(board.Tiles[1, 1].Occupied);
         }
 
         [Test]
@@ -93,13 +92,13 @@ namespace DefaultNamespace
             var tetromino = CreateLineTetromino();
             for (int i = 0; i < 10; i++)
             {
-                var newPos = Vector2.up;
-                if (!board.Move(Factory.Move(tetromino.BaseTetrominos, newPos)))
+                var direction = Vector2.up;
+                if (!board.Move(Factory.Move(tetromino.BaseTetrominos, direction)))
                 {
                     continue;
                 }
 
-                tetromino.Move(newPos);
+                tetromino.Move(direction);
             }
             board.FinishTurno(tetromino.BaseTetrominos);
             Assert.True(board.CompleteLine().Count > 0);
@@ -113,13 +112,13 @@ namespace DefaultNamespace
             var tetromino = CreateLineTetromino();
             for (int i = 0; i < 5; i++)
             {
-                var newPos = Vector2.up;
-                if (!board.Move(Factory.Move(tetromino.BaseTetrominos, newPos)))
+                var direction = Vector2.up;
+                if (!board.Move(Factory.Move(tetromino.BaseTetrominos, direction)))
                 {
                     continue;
                 }
 
-                tetromino.Move(newPos);
+                tetromino.Move(direction);
             }
 
             if (rotate)

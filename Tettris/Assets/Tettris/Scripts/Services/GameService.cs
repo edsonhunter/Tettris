@@ -31,30 +31,30 @@ public class GameService : IGameService
         return Tetromino;
     }
 
-    public void Move(Vector3 newPos)
+    public void Move(Vector3 direction)
     {
         if (Tetromino == null)
         {
             return;
         }
 
-        var temporaryPos = Factory.Move(Tetromino.BaseTetrominos, newPos);
+        var temporaryPos = Factory.Move(Tetromino.BaseTetrominos, direction);
         if (!Board.Move(temporaryPos))
         {
             return;
         }
 
-        Tetromino.Move(newPos);
+        Tetromino.Move(direction);
     }
 
-    public void Rotate(Quaternion newPos)
+    public void Rotate(Quaternion direction)
     {
         if (Tetromino == null)
         {
             return;
         }
 
-        var temporaryPos = Factory.Rotate(Tetromino.BaseTetrominos, newPos);
+        var temporaryPos = Factory.Rotate(Tetromino.BaseTetrominos, direction);
         if (!Board.Rotate(temporaryPos))
         {
             return;
