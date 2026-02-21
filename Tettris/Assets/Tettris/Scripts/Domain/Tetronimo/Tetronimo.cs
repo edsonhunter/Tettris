@@ -35,7 +35,7 @@ namespace Tettris.Domain.Tetronimo
         {
             for (int baseTetrominoIdx = 0; baseTetrominoIdx < _baseTetrominos.Count; baseTetrominoIdx++)
             {
-                _baseTetrominos[baseTetrominoIdx].Move(startPositions[baseTetrominoIdx]);
+                _baseTetrominos[baseTetrominoIdx].SetPosition(startPositions[baseTetrominoIdx]);
             }
             
             return startPositions.First();

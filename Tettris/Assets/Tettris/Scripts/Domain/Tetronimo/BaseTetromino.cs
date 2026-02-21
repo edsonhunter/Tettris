@@ -10,26 +10,37 @@ namespace Tettris.Domain.Tetronimo
         public Guid TetronimoId { get; private set; }
         public Vector2 GridPosition { get; private set; }
 
+        public event EventHandler OnDestroyed;
+        public event EventHandler<Vector2> OnPositionChanged;
+
         public BaseTetromino(Guid tetronimoId, Vector2 gridPosition)
         {
             TetronimoId = tetronimoId;
             GridPosition = gridPosition;
         }
 
+        public void Destroy()
+        {
+            OnDestroyed?.Invoke(this, EventArgs.Empty);
+        }
+
         public void Rotate(Vector2 pivot, Quaternion newPos)
         {
             GridPosition = GridPosition.RotateAroundPivotVector2(pivot, newPos);
+            OnPositionChanged?.Invoke(this, GridPosition);
         }
         
         public Vector2 Move(Vector2 newPos)
         {
             GridPosition += newPos;
+            OnPositionChanged?.Invoke(this, GridPosition);
             return GridPosition;
         }
 
         public void SetPosition(Vector2 newPo)
         {
             GridPosition = newPo;
+            OnPositionChanged?.Invoke(this, GridPosition);
         }
     }
 }
