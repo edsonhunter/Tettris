@@ -56,23 +56,11 @@ namespace Tettris.Manager
         
         private void RegisterService<T>(IService service) where T : IService
         {
-            if (!(service is T))
-            {
-                throw new InvalidOperationException(
-                    $"Nao pode registar o Manager {service.GetType().FullName} para a interface {typeof(T).FullName}");
-            }
-
             Services.Add(typeof(T), service);
         }
 
         private void RegisterManager<T>(IManager manager) where T : IManager
         {
-            if (!(manager is T))
-            {
-                throw new InvalidOperationException(
-                    $"Nao pode registar o Manager {manager.GetType().FullName} para a interface {typeof(T).FullName}");
-            }
-            
             Managers.Add(typeof(T), manager);
         }
 
@@ -94,8 +82,8 @@ namespace Tettris.Manager
         }
 
         public T GetManager<T>() where T : IManager
-        {
-            return (T) Managers[typeof(T)];
+        { 
+			return (T) Managers[typeof(T)];
         }
     }
 }

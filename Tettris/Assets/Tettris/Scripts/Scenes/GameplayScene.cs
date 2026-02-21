@@ -38,7 +38,7 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
     
     [SerializeField]
     private TextMeshProUGUI _level = null;
-    private TextMeshProUGUI Level => _score;
+    private TextMeshProUGUI Level => _level;
 
     [SerializeField]
     private Button _pauseButton = null;
@@ -103,7 +103,7 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
 
     private IEnumerator Turno()
     {
-        while (GameService.GameOver())
+        while (!GameService.GameOver())
         {
             if (!GameService.NextTurno())
             {

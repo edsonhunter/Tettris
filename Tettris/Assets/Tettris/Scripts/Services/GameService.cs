@@ -88,11 +88,11 @@ public class GameService : IGameService
 
     public float Speed()
     {
-        return 5 / CurrentLevel + 1;
+        return 5 / (CurrentLevel + 1);
     }
 
     public bool GameOver()
     {
-        return Running;
+        return !Running;
     }
 }
