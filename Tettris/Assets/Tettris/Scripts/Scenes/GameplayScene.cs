@@ -54,10 +54,15 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
 
     private void SubscribeToInput()
     {
-        _inputHandler.OnMoveLeft += () => GameService.Move(Vector3.left);
-        _inputHandler.OnMoveRight += () => GameService.Move(Vector3.right);
-        _inputHandler.OnRotate += () => GameService.Rotate(Quaternion.Euler(0, 0, 90f));
-        _inputHandler.OnFastDrop += () => _dropCts?.Cancel();
+        _inputHandler.OnMoveLeft += InputHandler_OnMoveLeft;
+        _inputHandler.OnMoveRight += InputHandler_OnMoveRight;
+        _inputHandler.OnRotate += InputHandler_OnRotate;
+        _inputHandler.OnFastDrop += InputHandler_OnFastDrop;
+    }
+
+    private void InputHandler_OnMoveLeft() => GameService.Move(Vector3.left);
+    private void InputHandler_OnMoveRight() => GameService.Move(Vector3.right);
+    private void InputHandler_OnRotate() => GameService.Rotate(Quaternion.Euler(0, 0, 90f));
     private void InputHandler_OnFastDrop()
     {
         GameService.HardDrop();
@@ -68,10 +73,10 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
     {
         if (_inputHandler != null)
         {
-            _inputHandler.OnMoveLeft -= () => GameService.Move(Vector3.left);
-            _inputHandler.OnMoveRight -= () => GameService.Move(Vector3.right);
-            _inputHandler.OnRotate -= () => GameService.Rotate(Quaternion.Euler(0, 0, 90f));
-            _inputHandler.OnFastDrop -= () => _dropCts?.Cancel();
+            _inputHandler.OnMoveLeft -= InputHandler_OnMoveLeft;
+            _inputHandler.OnMoveRight -= InputHandler_OnMoveRight;
+            _inputHandler.OnRotate -= InputHandler_OnRotate;
+            _inputHandler.OnFastDrop -= InputHandler_OnFastDrop;
         }
     }
 

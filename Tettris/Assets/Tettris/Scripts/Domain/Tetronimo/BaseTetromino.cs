@@ -27,6 +27,7 @@ namespace Tettris.Domain.Tetronimo
         public void Rotate(Vector2 pivot, Quaternion newPos)
         {
             GridPosition = GridPosition.RotateAroundPivotVector2(pivot, newPos);
+            GridPosition = new Vector2(Mathf.Round(GridPosition.x), Mathf.Round(GridPosition.y));
             OnPositionChanged?.Invoke(this, GridPosition);
         }
         

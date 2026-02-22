@@ -81,6 +81,8 @@ public class GameService : IGameService
             Running = false;
         }
         
+        Tetromino = null;
+
         return false;
     }
 
