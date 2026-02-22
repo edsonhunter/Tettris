@@ -144,5 +144,34 @@ namespace DefaultNamespace
             board.FinishTurno(tetromino.BaseTetrominos);
             Assert.AreEqual(!rotate, board.CompleteLine().Count > 0);
         }
+
+        [Test]
+        public void CompleteMultipleLines()
+        {
+            var board = CreateBoard(10, 4);
+
+            // Fill row 0 completely
+            for (int i = 0; i < 4; i++)
+                board.Tiles[0, i].OccupySlot(new BaseTetromino(Guid.NewGuid(), new Vector2(i, 0)));
+
+            // Fill row 1 completely
+            for (int i = 0; i < 4; i++)
+                board.Tiles[1, i].OccupySlot(new BaseTetromino(Guid.NewGuid(), new Vector2(i, 1)));
+
+            // Fill row 2 partially (this should drop down to row 0)
+            board.Tiles[2, 0].OccupySlot(new BaseTetromino(Guid.NewGuid(), new Vector2(0, 2)));
+
+            var clearedLines = board.CompleteLine();
+
+            Assert.AreEqual(2, clearedLines.Count, "Should clear exactly 2 lines simultaneously");
+
+            // Row 0 should now contain the block that was originally at row 2
+            Assert.IsTrue(board.Tiles[0, 0].Occupied, "Block from row 2 should fall to row 0");
+            Assert.IsFalse(board.Tiles[0, 1].Occupied, "Other columns in row 0 should be empty");
+
+            // Row 1 and Row 2 should now be completely empty
+            Assert.IsFalse(board.Tiles[1, 0].Occupied, "Row 1 should be empty after dropping");
+            Assert.IsFalse(board.Tiles[2, 0].Occupied, "Row 2 should be empty after dropping");
+        }
     }
 }

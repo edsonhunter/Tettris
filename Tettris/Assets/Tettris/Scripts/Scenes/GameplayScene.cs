@@ -15,10 +15,9 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
 {
     [Header("")]
     [SerializeField]
-    private List<TetrominoController> TetrominoPrefabs = null;
-
-    [SerializeField]
-    private TetrominoController _currentTetromino = null;
+    private Cube _cubePrefab = null;
+    
+    private Queue<Cube> _cubePool = new Queue<Cube>();
 
     [SerializeField]
     private GameObject _startPosition = null;
@@ -66,10 +65,31 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
 
     private void NextRound()
     {
-        _currentTetromino = null;
         var tetromino = GameService.NextRound();
-        _currentTetromino = Instantiate(TetrominoPrefabs[Random.Range(0, TetrominoPrefabs.Count)], _startPosition.transform.position, Quaternion.identity);
-        _currentTetromino.Init(tetromino);
+        
+        foreach (var baseTetromino in tetromino.BaseTetrominos)
+        {
+            Cube cube = GetCube();
+            cube.transform.position = _startPosition.transform.position;
+            cube.Init(baseTetromino, ReturnCube);
+        }
+    }
+
+    private Cube GetCube()
+    {
+        if (_cubePool.Count > 0)
+        {
+            var cube = _cubePool.Dequeue();
+            cube.gameObject.SetActive(true);
+            return cube;
+        }
+        return Instantiate(_cubePrefab, _startPosition.transform.position, Quaternion.identity);
+    }
+    
+    private void ReturnCube(Cube cube)
+    {
+        cube.gameObject.SetActive(false);
+        _cubePool.Enqueue(cube);
     }
 
     protected override void Loop()
@@ -124,8 +144,6 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
 
     private bool CompletedLine()
     {
-        _currentTetromino.End();
-        
         var completedLines = GameService.CompleteLine();
         if (completedLines.Count <= 0)
         {
