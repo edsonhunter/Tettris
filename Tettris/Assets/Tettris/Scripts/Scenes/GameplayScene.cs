@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Tettris.Controller.Shape;
 using Tettris.Manager.Interface;
 using Tettris.Scenes;
 using Tettris.Scenes.Interface;
@@ -30,7 +28,7 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
         GameService.CreateNewBoard(SceneData.Altura, SceneData.Largura);
         
         _boardRenderer.Initialize(SceneData.Largura, SceneData.Altura);
-        _cameraController.Initialize(SceneData.Largura, SceneData.Altura);
+        _cameraController.Initialize(SceneData.Largura, SceneData.Altura, _inputHandler);
         _uiHandler.Initialize(OnPauseClick);
         SubscribeToInput();
 
@@ -91,6 +89,8 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
         {
             if (!GameService.NextTurno())
             {
+                _cameraController.DropShake();
+
                 if (CompletedLine())
                 {
                     await Task.Delay(500);

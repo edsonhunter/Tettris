@@ -6,9 +6,23 @@ namespace Tettris.Scenes.Gameplay
     {
         [SerializeField] private Camera _camera;
         [SerializeField] private GameObject _background;
+        [SerializeField] private float _panAngle = 3f;
+        [SerializeField] private float _dropAngle = 4f;
+        [SerializeField] private float _returnSpeed = 10f;
 
-        public void Initialize(int boardWidth, int boardHeight)
+        private Vector3 _currentRotation;
+        private TetrisInputHandler _inputHandler;
+
+        public void Initialize(int boardWidth, int boardHeight, TetrisInputHandler inputHandler)
         {
+            _inputHandler = inputHandler;
+            if (_inputHandler != null)
+            {
+                _inputHandler.OnMoveLeft += PanLeft;
+                _inputHandler.OnMoveRight += PanRight;
+                _inputHandler.OnFastDrop += DropShake;
+            }
+
             float centerX = (boardWidth - 1) / 2f;
             float centerY = (boardHeight - 1) / 2f;
 
@@ -37,6 +51,41 @@ namespace Tettris.Scenes.Gameplay
                 {
                     _background.transform.position = new Vector3(centerX, centerY, 10f);
                 }
+            }
+        }
+
+        private void Update()
+        {
+            if (_currentRotation.sqrMagnitude > 0.001f)
+            {
+                _currentRotation = Vector3.Lerp(_currentRotation, Vector3.zero, Time.deltaTime * _returnSpeed);
+                transform.localRotation = Quaternion.Euler(_currentRotation);
+            }
+            else if (transform.localRotation != Quaternion.identity)
+            {
+                _currentRotation = Vector3.zero;
+                transform.localRotation = Quaternion.identity;
+                enabled = false;
+            }
+        }
+
+        private void TriggerEffect(Vector3 rotationOffset)
+        {
+            _currentRotation += rotationOffset;
+            enabled = true;
+        }
+
+        public void PanLeft() => TriggerEffect(new Vector3(0, -_panAngle, 0));
+        public void PanRight() => TriggerEffect(new Vector3(0, _panAngle, 0));
+        public void DropShake() => TriggerEffect(new Vector3(_dropAngle, 0, 0));
+
+        private void OnDestroy()
+        {
+            if (_inputHandler != null)
+            {
+                _inputHandler.OnMoveLeft -= PanLeft;
+                _inputHandler.OnMoveRight -= PanRight;
+                _inputHandler.OnFastDrop -= DropShake;
             }
         }
     }
