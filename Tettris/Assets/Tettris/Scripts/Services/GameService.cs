@@ -28,6 +28,10 @@ public class GameService : IGameService
     {
         CurrentLevel++;
         Tetromino = Factory.CreateTetromino();
+        
+        Vector2 spawnPosition = new Vector2(Mathf.FloorToInt(Board.Colunas / 2), Board.Linhas - 1);
+        Tetromino.Move(spawnPosition);
+        
         return Tetromino;
     }
 
@@ -72,7 +76,6 @@ public class GameService : IGameService
             return true;
         }
 
-        //Falhou em descer, seta a posicao atual como posicao no tabuleiro
         if (!Board.FinishTurno(Tetromino.BaseTetrominos))
         {
             Running = false;
