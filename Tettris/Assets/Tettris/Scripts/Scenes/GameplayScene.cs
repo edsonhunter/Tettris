@@ -6,57 +6,33 @@ using Tettris.Controller.Shape;
 using Tettris.Manager.Interface;
 using Tettris.Scenes;
 using Tettris.Scenes.Interface;
-using Tettris.ScriptableObject;
 using Tettris.Services.Interface;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.InputSystem;
+using Tettris.Scenes.Gameplay;
 
 public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
 {
-    [Header("Input Settings")]
-    [SerializeField] private float _minSwipeDistance = 50f;
-    private Vector2 _touchStartPos;
-    private bool _isSwiping;
+    [Header("Handlers")]
+    [SerializeField] private CubeSpawner _cubeSpawner;
+    [SerializeField] private GameplayUIHandler _uiHandler;
+    [SerializeField] private TetrisInputHandler _inputHandler;
 
-    [Header("")]
-    [SerializeField]
-    private CubeData _cubeData = null;
-    
-    private Queue<Cube> _cubePool = new Queue<Cube>();
     private CancellationTokenSource _dropCts;
 
-    [SerializeField]
-    private GameObject _startPosition = null;
-
-    [SerializeField]
-    private GameObject _background = null;
-
-    [SerializeField]
-    private Camera _camera = null;
+    [Header("Scene References")]
+    [SerializeField] private GameObject _background = null;
+    [SerializeField] private Camera _camera = null;
 
     private IGameService GameService { get; set; }
-
-    [SerializeField]
-    private TextMeshProUGUI _score = null;
-    private TextMeshProUGUI Score => _score;
-    
-    [SerializeField]
-    private TextMeshProUGUI _level = null;
-    private TextMeshProUGUI Level => _level;
-
-    [SerializeField]
-    private Button _pauseButton = null;
-    private Button PauseButton => _pauseButton;
-
     private int CurrentScore { get; set; }
     
     protected override void Loading(Action<bool> loaded)
     {
         GameService = GetService<IGameService>();
         GameService.CreateNewBoard(SceneData.Altura, SceneData.Largura);
-        PauseButton.onClick.AddListener(OnPauseClick);
+        
+        _uiHandler.Initialize(OnPauseClick);
+        SubscribeToInput();
         
         loaded(true);
     }
@@ -64,111 +40,40 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
     protected override void Loaded()
     {
         StartCoroutine(GetManager<IAudioManager>().FadeIn(2f));
-        NextRound();
+        
+        var tetromino = GameService.NextRound();
+        _cubeSpawner.SpawnTetromino(tetromino);
         
         _dropCts = new CancellationTokenSource();
         _ = TurnoAsync();
-        CurrentScore = 0;
-        _level.text = $"LEVEL: {GameService.CurrentLevel}";
-        _score.text = $"SCORE: {CurrentScore.ToString()}";
-    }
-
-    private void NextRound()
-    {
-        var tetromino = GameService.NextRound();
-        Material material = _cubeData.Materials[(int)tetromino.TetrominoType];
         
-        foreach (var baseTetromino in tetromino.BaseTetrominos)
-        {
-            Cube cube = GetCube();
-            cube.transform.position = _startPosition.transform.position;
-            cube.SetMaterial(material);
-            cube.Init(baseTetromino, ReturnCube);
-        }
+        CurrentScore = 0;
+        _uiHandler.UpdateLevel(GameService.CurrentLevel);
+        _uiHandler.UpdateScore(CurrentScore);
     }
 
-    private Cube GetCube()
+    private void SubscribeToInput()
     {
-        if (_cubePool.Count > 0)
-        {
-            var cube = _cubePool.Dequeue();
-            cube.gameObject.SetActive(true);
-            return cube;
-        }
-        return Instantiate(_cubeData.CubePrefab, _startPosition.transform.position, Quaternion.identity)
-            .GetComponent<Cube>();
+        _inputHandler.OnMoveLeft += () => GameService.Move(Vector3.left);
+        _inputHandler.OnMoveRight += () => GameService.Move(Vector3.right);
+        _inputHandler.OnRotate += () => GameService.Rotate(Quaternion.Euler(0, 0, 90f));
+        _inputHandler.OnFastDrop += () => _dropCts?.Cancel();
     }
-    
-    private void ReturnCube(Cube cube)
+
+    private void OnDestroy()
     {
-        cube.gameObject.SetActive(false);
-        _cubePool.Enqueue(cube);
+        if (_inputHandler != null)
+        {
+            _inputHandler.OnMoveLeft -= () => GameService.Move(Vector3.left);
+            _inputHandler.OnMoveRight -= () => GameService.Move(Vector3.right);
+            _inputHandler.OnRotate -= () => GameService.Rotate(Quaternion.Euler(0, 0, 90f));
+            _inputHandler.OnFastDrop -= () => _dropCts?.Cancel();
+        }
     }
 
     protected override void Loop()
     {
-        if (!GameService.Running)
-        {
-            return;
-        }
-
-        var touch = Touchscreen.current?.primaryTouch;
-        if (touch != null)
-        {
-            if (touch.press.wasPressedThisFrame)
-            {
-                _touchStartPos = touch.position.ReadValue();
-                _isSwiping = true;
-            }
-            else if (touch.press.wasReleasedThisFrame && _isSwiping)
-            {
-                _isSwiping = false;
-                Vector2 touchEndPos = touch.position.ReadValue();
-                Vector2 swipeDelta = touchEndPos - _touchStartPos;
-
-                if (swipeDelta.magnitude < _minSwipeDistance)
-                {
-                    GameService.Rotate(Quaternion.Euler(0, 0, 90f));
-                }
-                else
-                {
-                    if (Mathf.Abs(swipeDelta.x) > Mathf.Abs(swipeDelta.y))
-                    {
-                        GameService.Move(swipeDelta.x > 0 ? Vector3.right : Vector3.left);
-                    }
-                    else
-                    {
-                        if (swipeDelta.y < 0) _dropCts?.Cancel();
-                    }
-                }
-            }
-
-            return;
-        }
-        
-        //Fallback
-        var keyboard = Keyboard.current;
-        if (keyboard != null)
-        {
-            if (keyboard.leftArrowKey.wasPressedThisFrame)
-            {
-                GameService.Move(Vector3.left);
-            }
-            else if (keyboard.rightArrowKey.wasPressedThisFrame)
-            {
-                GameService.Move(Vector3.right);
-            }
-
-            if (keyboard.downArrowKey.wasPressedThisFrame)
-            {
-                _dropCts?.Cancel();
-            }
-
-            if (keyboard.upArrowKey.wasPressedThisFrame)
-            {
-                GameService.Rotate(Quaternion.Euler(0, 0, 90f));
-            }
-        }
+        // Loop is now empty as Input is handled by TetrisInputHandler
     }
 
     private async Task TurnoAsync()
@@ -180,11 +85,12 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
                 if (CompletedLine())
                 {
                     await Task.Delay(500);
-                    _score.text = $"SCORE: {CurrentScore.ToString()}";
+                    _uiHandler.UpdateScore(CurrentScore);
                 }
 
-                NextRound();
-                _level.text = $"LEVEL: {GameService.CurrentLevel}";
+                var nextTetromino = GameService.NextRound();
+                _cubeSpawner.SpawnTetromino(nextTetromino);
+                _uiHandler.UpdateLevel(GameService.CurrentLevel);
             }
 
             try
