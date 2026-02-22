@@ -125,6 +125,8 @@ namespace Tettris.Domain.Board
             {
                 if (Tiles[line, column].Occupied)
                 {
+                    var tetromino = Tiles[line, column].CurrentTetromino;
+                    tetromino.Destroy();
                     Tiles[line, column].ReleaseSlot();
                 }
             }
@@ -140,7 +142,9 @@ namespace Tettris.Domain.Board
                     {
                         continue;
                     }
-                    Tiles[line - 1, column].OccupySlot(Tiles[line, column].CurrentTetromino);
+                    var t = Tiles[line, column].CurrentTetromino;
+                    t.Move(Vector2.down);
+                    Tiles[line - 1, column].OccupySlot(t);
                     Tiles[line, column].ReleaseSlot();
                 }
             }

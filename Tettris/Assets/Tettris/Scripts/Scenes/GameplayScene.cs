@@ -30,7 +30,6 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
     private Camera _camera = null;
 
     private IGameService GameService { get; set; }
-    private IList<TetrominoController> TetrominosInPlay { get; set; }
 
     [SerializeField]
     private TextMeshProUGUI _score = null;
@@ -60,7 +59,6 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
         StartCoroutine(GetManager<IAudioManager>().FadeIn(2f));
         NextRound();
         StartCoroutine(Turno());
-        TetrominosInPlay = new List<TetrominoController>();
         CurrentScore = 0;
         _level.text = $"LEVEL: {GameService.CurrentLevel}";
         _score.text = $"SCORE: {CurrentScore.ToString()}";
@@ -128,30 +126,13 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
     {
         _currentTetromino.End();
         
-        TetrominosInPlay.Add(_currentTetromino);
         var completedLines = GameService.CompleteLine();
         if (completedLines.Count <= 0)
         {
             return false;
         }
 
-        foreach (var lines in completedLines)
-        {
-            for (int tetrominoIdx = TetrominosInPlay.Count - 1; tetrominoIdx >= 0; tetrominoIdx--)
-            {
-                var controller = TetrominosInPlay[tetrominoIdx];
-                if (controller.ClearLine(lines))
-                {
-                    CurrentScore += 100;
-                }
-                controller.RowDown(lines);
-
-                if (controller.Cubes.Count <= 0)
-                {
-                    TetrominosInPlay.RemoveAt(tetrominoIdx);
-                }
-            }
-        }
+        CurrentScore += completedLines.Count * 100;
 
         return true;
     }
