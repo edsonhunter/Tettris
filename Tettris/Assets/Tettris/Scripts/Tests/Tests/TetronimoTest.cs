@@ -87,7 +87,6 @@ namespace DefaultNamespace
         [Test]
         public void GameLoop()
         {
-            var chegouAoFim = false;
             var board = CreateBoard(10, 4);
             var tetromino = CreateLineTetromino();
             for (int i = 0; i < 10; i++)

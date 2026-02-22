@@ -11,9 +11,15 @@ using Tettris.Services.Interface;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
 {
+    [Header("Input Settings")]
+    [SerializeField] private float _minSwipeDistance = 50f;
+    private Vector2 _touchStartPos;
+    private bool _isSwiping;
+
     [Header("")]
     [SerializeField]
     private CubeData _cubeData = null;
@@ -89,7 +95,8 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
             cube.gameObject.SetActive(true);
             return cube;
         }
-        return Instantiate(_cubeData.CubePrefab, _startPosition.transform.position, Quaternion.identity).GetComponent<Cube>();
+        return Instantiate(_cubeData.CubePrefab, _startPosition.transform.position, Quaternion.identity)
+            .GetComponent<Cube>();
     }
     
     private void ReturnCube(Cube cube)
@@ -104,24 +111,63 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
         {
             return;
         }
-        
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            GameService.Move(Vector3.left);
-        }
-        else if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            GameService.Move(Vector3.right);
-        }
-        
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            _dropCts?.Cancel();
-        }
 
-        if (Input.GetKeyDown(KeyCode.UpArrow))
+        var touch = Touchscreen.current?.primaryTouch;
+        if (touch != null)
         {
-            GameService.Rotate(Quaternion.Euler(0, 0, 90f));
+            if (touch.press.wasPressedThisFrame)
+            {
+                _touchStartPos = touch.position.ReadValue();
+                _isSwiping = true;
+            }
+            else if (touch.press.wasReleasedThisFrame && _isSwiping)
+            {
+                _isSwiping = false;
+                Vector2 touchEndPos = touch.position.ReadValue();
+                Vector2 swipeDelta = touchEndPos - _touchStartPos;
+
+                if (swipeDelta.magnitude < _minSwipeDistance)
+                {
+                    GameService.Rotate(Quaternion.Euler(0, 0, 90f));
+                }
+                else
+                {
+                    if (Mathf.Abs(swipeDelta.x) > Mathf.Abs(swipeDelta.y))
+                    {
+                        GameService.Move(swipeDelta.x > 0 ? Vector3.right : Vector3.left);
+                    }
+                    else
+                    {
+                        if (swipeDelta.y < 0) _dropCts?.Cancel();
+                    }
+                }
+            }
+
+            return;
+        }
+        
+        //Fallback
+        var keyboard = Keyboard.current;
+        if (keyboard != null)
+        {
+            if (keyboard.leftArrowKey.wasPressedThisFrame)
+            {
+                GameService.Move(Vector3.left);
+            }
+            else if (keyboard.rightArrowKey.wasPressedThisFrame)
+            {
+                GameService.Move(Vector3.right);
+            }
+
+            if (keyboard.downArrowKey.wasPressedThisFrame)
+            {
+                _dropCts?.Cancel();
+            }
+
+            if (keyboard.upArrowKey.wasPressedThisFrame)
+            {
+                GameService.Rotate(Quaternion.Euler(0, 0, 90f));
+            }
         }
     }
 
