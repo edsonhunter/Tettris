@@ -53,7 +53,7 @@ public class GameService : IGameService
 
     public void Rotate(Quaternion direction)
     {
-        if (Tetromino == null)
+        if (Tetromino == null || Tetromino.TetrominoType == TetrominoType.O)
         {
             return;
         }

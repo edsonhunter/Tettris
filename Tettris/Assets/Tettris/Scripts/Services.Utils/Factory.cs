@@ -64,7 +64,10 @@ public class Factory
                 new BaseTetromino(baseTetromino.TetronimoId, baseTetromino.GridPosition))
             .Cast<IBaseTetromino>().ToList();
 
-        var pivot = currenTetrominos.First().GridPosition;
+        float sumX = currenTetrominos.Sum(t => t.GridPosition.x);
+        float sumY = currenTetrominos.Sum(t => t.GridPosition.y);
+        int count = currenTetrominos.Count;
+        Vector2 pivot = new Vector2(Mathf.Round(sumX / count), Mathf.Round(sumY / count));
         
         foreach (IBaseTetromino baseTetromino in rotatedTetromino)
         {
