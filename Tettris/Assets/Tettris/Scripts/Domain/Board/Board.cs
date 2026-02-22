@@ -81,8 +81,8 @@ namespace Tettris.Domain.Board
         {
             foreach (var movedTetromino in tetrominoBaseTetrominos)
             {
-                var linhaIdx = Mathf.FloorToInt(movedTetromino.GridPosition.y); //O Movimento lateral é baseado em X mas andamos nas colunas do vetor
-                var colunaIdx = Mathf.FloorToInt(movedTetromino.GridPosition.x); //O Movimento vertical é baseado em Y mas andamos nas linhas do vetor
+                var linhaIdx = Mathf.FloorToInt(movedTetromino.GridPosition.y);
+                var colunaIdx = Mathf.FloorToInt(movedTetromino.GridPosition.x);
                 if (!Tiles[linhaIdx, colunaIdx].OccupySlot(movedTetromino))
                 {
                     return false;

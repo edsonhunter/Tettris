@@ -1,4 +1,4 @@
-namespace Tettris.Domain.Tetronimo
+namespace Tettris.Domain.Interface.Tetronimo
 {
     public enum TetrominoType
     {

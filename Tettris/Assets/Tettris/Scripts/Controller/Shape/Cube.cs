@@ -11,6 +11,12 @@ namespace Tettris.Controller.Shape
 
         private IBaseTetromino BaseTetromino { get; set; }
         private System.Action<Cube> _returnToPool;
+        private MeshRenderer _meshRenderer;
+
+        private void Awake()
+        {
+            _meshRenderer = GetComponent<MeshRenderer>();
+        }
 
         public void Init(IBaseTetromino baseTetromino, System.Action<Cube> returnToPool)
         {
@@ -43,6 +49,14 @@ namespace Tettris.Controller.Shape
             else
             {
                 Destroy(gameObject);
+            }
+        }
+
+        public void SetMaterial(Material material)
+        {
+            if (_meshRenderer != null)
+            {
+                _meshRenderer.material = material;
             }
         }
 

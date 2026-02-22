@@ -9,6 +9,7 @@ namespace Tettris.Domain.Tetronimo
     public class Tetronimo : ITetromino
     {
         public Guid TetronimoId { get; }
+        public TetrominoType TetrominoType { get; }
         public IList<IBaseTetromino> BaseTetrominos => _baseTetrominos.AsReadOnly();
         private List<IBaseTetromino> _baseTetrominos { get; set; }
         private EventHandler<Vector3> _onMove { get; set; }
@@ -25,9 +26,10 @@ namespace Tettris.Domain.Tetronimo
             remove => _onRotate -= value;
         }
 
-        public Tetronimo(Guid tetronimoId, IList<IBaseTetromino> baseTetrominos)
+        public Tetronimo(Guid tetronimoId, TetrominoType tetrominoType, IList<IBaseTetromino> baseTetrominos)
         {
             TetronimoId = tetronimoId;
+            TetrominoType = tetrominoType;
             _baseTetrominos = new List<IBaseTetromino>(baseTetrominos);
         }
 

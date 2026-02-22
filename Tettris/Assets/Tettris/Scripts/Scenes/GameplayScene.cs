@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,20 +6,20 @@ using Tettris.Controller.Shape;
 using Tettris.Manager.Interface;
 using Tettris.Scenes;
 using Tettris.Scenes.Interface;
+using Tettris.ScriptableObject;
 using Tettris.Services.Interface;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Random = UnityEngine.Random;
 
 public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
 {
     [Header("")]
     [SerializeField]
-    private Cube _cubePrefab = null;
+    private CubeData _cubeData = null;
     
     private Queue<Cube> _cubePool = new Queue<Cube>();
-    private System.Threading.CancellationTokenSource _dropCts;
+    private CancellationTokenSource _dropCts;
 
     [SerializeField]
     private GameObject _startPosition = null;
@@ -71,11 +70,13 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
     private void NextRound()
     {
         var tetromino = GameService.NextRound();
+        Material material = _cubeData.Materials[(int)tetromino.TetrominoType];
         
         foreach (var baseTetromino in tetromino.BaseTetrominos)
         {
             Cube cube = GetCube();
             cube.transform.position = _startPosition.transform.position;
+            cube.SetMaterial(material);
             cube.Init(baseTetromino, ReturnCube);
         }
     }
@@ -88,7 +89,7 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
             cube.gameObject.SetActive(true);
             return cube;
         }
-        return Instantiate(_cubePrefab, _startPosition.transform.position, Quaternion.identity);
+        return Instantiate(_cubeData.CubePrefab, _startPosition.transform.position, Quaternion.identity).GetComponent<Cube>();
     }
     
     private void ReturnCube(Cube cube)

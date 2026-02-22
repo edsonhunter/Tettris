@@ -45,7 +45,7 @@ namespace DefaultNamespace
             var cube04 = new Vector2(2, 0);
             var b4 = new BaseTetromino(id, cube04);
             baseTetrominos.Add(b4);
-            return new Tetronimo(id, baseTetrominos);
+            return new Tetronimo(id, TetrominoType.T, baseTetrominos);
         }
 
         private ITetromino CreateLineTetromino()
@@ -66,7 +66,7 @@ namespace DefaultNamespace
             var cube04 = new Vector2(3, 0);
             var b4 = new BaseTetromino(id, cube04);
             baseTetrominos.Add(b4);
-            return new Tetronimo(id, baseTetrominos);
+            return new Tetronimo(id, TetrominoType.L, baseTetrominos);
         }
 
         [Test]

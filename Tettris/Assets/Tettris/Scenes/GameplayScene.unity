@@ -216,7 +216,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 870f855176731b74c8a5ea20505fd364, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cubePrefab: {fileID: 2599807304548473159, guid: 3be2ddf012ad71f48b699d9a39336120, type: 3}
+  _cubeData: {fileID: 11400000, guid: acb6623640e89194f9aeeada7b1c7e65, type: 2}
   _startPosition: {fileID: 1647208490}
   _background: {fileID: 1731621548}
   _camera: {fileID: 1469852662}
@@ -272,7 +272,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 73, y: -41.701996}
+  m_AnchoredPosition: {x: 73, y: -41.702026}
   m_SizeDelta: {x: 146, y: 36.182}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &357449861
@@ -997,7 +997,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 77.5, y: -11.805481}
+  m_AnchoredPosition: {x: 77.5, y: -11.80542}
   m_SizeDelta: {x: 155, y: 23.611}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1723971676

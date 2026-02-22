@@ -48,7 +48,7 @@ public class Factory
 
         Guid id = Guid.NewGuid();
         IList<IBaseTetromino> baseTetrominos = positions.Select(pos => new BaseTetromino(id, pos)).Cast<IBaseTetromino>().ToList();
-        return new Tetronimo(id, baseTetrominos);
+        return new Tetronimo(id, type.Value, baseTetrominos);
     }
 
     public static IList<IBaseTetromino> Move(IList<IBaseTetromino> currenTetrominos, Vector2 newPos)

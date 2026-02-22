@@ -7,6 +7,7 @@ namespace Tettris.Domain.Interface.Tetronimo
     public interface ITetromino
     {
         Guid TetronimoId { get; }
+        TetrominoType TetrominoType { get; }
         IList<IBaseTetromino> BaseTetrominos { get; }
         event EventHandler<Vector3> OnMove;
         event EventHandler<IList<Vector2>> OnRotate;
