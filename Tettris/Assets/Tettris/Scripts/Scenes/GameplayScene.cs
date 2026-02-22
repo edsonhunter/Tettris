@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Tettris.Controller.Shape;
 using Tettris.Manager.Interface;
 using Tettris.Scenes;
@@ -18,6 +20,7 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
     private Cube _cubePrefab = null;
     
     private Queue<Cube> _cubePool = new Queue<Cube>();
+    private System.Threading.CancellationTokenSource _dropCts;
 
     [SerializeField]
     private GameObject _startPosition = null;
@@ -57,7 +60,9 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
     {
         StartCoroutine(GetManager<IAudioManager>().FadeIn(2f));
         NextRound();
-        StartCoroutine(Turno());
+        
+        _dropCts = new CancellationTokenSource();
+        _ = TurnoAsync();
         CurrentScore = 0;
         _level.text = $"LEVEL: {GameService.CurrentLevel}";
         _score.text = $"SCORE: {CurrentScore.ToString()}";
@@ -110,7 +115,7 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
         
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
-            GameService.Move(Vector3.down);
+            _dropCts?.Cancel();
         }
 
         if (Input.GetKeyDown(KeyCode.UpArrow))
@@ -119,7 +124,7 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
         }
     }
 
-    private IEnumerator Turno()
+    private async Task TurnoAsync()
     {
         while (!GameService.GameOver())
         {
@@ -127,7 +132,7 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
             {
                 if (CompletedLine())
                 {
-                    yield return new WaitForSeconds(0.5f);
+                    await Task.Delay(500);
                     _score.text = $"SCORE: {CurrentScore.ToString()}";
                 }
 
@@ -135,8 +140,14 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
                 _level.text = $"LEVEL: {GameService.CurrentLevel}";
             }
 
-            yield return new WaitForSeconds(GameService.Speed());
-
+            try
+            {
+                await Task.Delay((int)(GameService.Speed() * 1000), _dropCts.Token);
+            }
+            catch (TaskCanceledException)
+            {
+                _dropCts = new CancellationTokenSource();
+            }
         }
 
         GetManager<ISceneManager>().LoadSceneOverlay(new EndGameData(200));
