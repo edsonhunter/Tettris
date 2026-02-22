@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using Tettris.Domain.Interface.Board;
 using Tettris.Domain.Interface.Tetronimo;
@@ -24,8 +23,8 @@ namespace Tettris.Domain.Board
             var moved = false;
             foreach (var movedTetromino in moveTetrominos)
             {
-                var linhaIdx = Mathf.FloorToInt(movedTetromino.GridPosition.y); //O Movimento lateral é baseado em X mas andamos nas colunas do vetor
-                var colunaIdx = Mathf.FloorToInt(movedTetromino.GridPosition.x); //O Movimento vertical é baseado em Y mas andamos nas linhas do vetor
+                var linhaIdx = Mathf.FloorToInt(movedTetromino.GridPosition.y); 
+                var colunaIdx = Mathf.FloorToInt(movedTetromino.GridPosition.x);
 
                 if (colunaIdx < 0 && colunaIdx > -1)
                 {
@@ -56,8 +55,8 @@ namespace Tettris.Domain.Board
             var moved = false;
             foreach (var movedTetromino in moveTetrominos)
             {
-                var linhaIdx = Mathf.FloorToInt(movedTetromino.GridPosition.y); //O Movimento lateral é baseado em X mas andamos nas colunas do vetor
-                var colunaIdx = Mathf.FloorToInt(movedTetromino.GridPosition.x); //O Movimento vertical é baseado em Y mas andamos nas linhas do vetor
+                var linhaIdx = Mathf.FloorToInt(movedTetromino.GridPosition.y); 
+                var colunaIdx = Mathf.FloorToInt(movedTetromino.GridPosition.x);
 
                 if (linhaIdx >= Linhas || colunaIdx >= Colunas || linhaIdx < 0 || colunaIdx < 0)
                 {
@@ -113,6 +112,7 @@ namespace Tettris.Domain.Board
                     lines.Add(line);
                     ClearRow(line);
                     RowDown(line);
+                    line--;
                 }
             }
 
