@@ -25,14 +25,29 @@ public class Factory
         return new Board(linha, coluna, tiles);
     }
     
-    public static ITetromino CreateTetromino()
+    public static ITetromino CreateTetromino(TetrominoType? type = null)
     {
-        IList<IBaseTetromino> baseTetrominos = new List<IBaseTetromino>();
-        Guid id = Guid.NewGuid();
-        for (int baseIdx = 0; baseIdx < 4; baseIdx++)
+        if (type == null)
         {
-            baseTetrominos.Add(new BaseTetromino(id, Vector2.zero));
+            var values = Enum.GetValues(typeof(TetrominoType));
+            type = (TetrominoType)values.GetValue(UnityEngine.Random.Range(0, values.Length));
         }
+
+        Vector2[] positions;
+        switch (type.Value)
+        {
+            case TetrominoType.I: positions = new[] { new Vector2(0, 0), new Vector2(-1, 0), new Vector2(1, 0), new Vector2(2, 0) }; break;
+            case TetrominoType.J: positions = new[] { new Vector2(0, 0), new Vector2(-1, 0), new Vector2(1, 0), new Vector2(-1, 1) }; break;
+            case TetrominoType.L: positions = new[] { new Vector2(0, 0), new Vector2(-1, 0), new Vector2(1, 0), new Vector2(1, 1) }; break;
+            case TetrominoType.O: positions = new[] { new Vector2(0, 0), new Vector2(1, 0), new Vector2(0, 1), new Vector2(1, 1) }; break;
+            case TetrominoType.S: positions = new[] { new Vector2(0, 0), new Vector2(1, 0), new Vector2(0, 1), new Vector2(-1, 1) }; break;
+            case TetrominoType.T: positions = new[] { new Vector2(0, 0), new Vector2(-1, 0), new Vector2(1, 0), new Vector2(0, 1) }; break;
+            case TetrominoType.Z: positions = new[] { new Vector2(0, 0), new Vector2(-1, 0), new Vector2(0, 1), new Vector2(1, 1) }; break;
+            default: positions = new[] { new Vector2(0, 0), new Vector2(-1, 0), new Vector2(1, 0), new Vector2(2, 0) }; break;
+        }
+
+        Guid id = Guid.NewGuid();
+        IList<IBaseTetromino> baseTetrominos = positions.Select(pos => new BaseTetromino(id, pos)).Cast<IBaseTetromino>().ToList();
         return new Tetronimo(id, baseTetrominos);
     }
 
