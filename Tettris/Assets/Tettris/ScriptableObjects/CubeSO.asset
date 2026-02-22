@@ -19,4 +19,5 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 1b3ba787cd5b7ac4e8f4097c1a306032, type: 2}
   - {fileID: 2100000, guid: 0ebc8ec226420394e9a0b75b28072a17, type: 2}
   - {fileID: 2100000, guid: 622dda6df1e51bf43bd9d484e33cb7fb, type: 2}
+  - {fileID: 2100000, guid: 6922a499a3eec994c9b20588a6cfd3cd, type: 2}
   cubePrefab: {fileID: 6979749466472544244, guid: 3be2ddf012ad71f48b699d9a39336120, type: 3}

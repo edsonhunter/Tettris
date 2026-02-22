@@ -252,14 +252,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 870f855176731b74c8a5ea20505fd364, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _minSwipeDistance: 50
-  _cubeData: {fileID: 11400000, guid: acb6623640e89194f9aeeada7b1c7e65, type: 2}
-  _startPosition: {fileID: 1647208490}
+  _cubeSpawner: {fileID: 1059518083}
+  _uiHandler: {fileID: 466880233}
+  _inputHandler: {fileID: 1654355572}
   _background: {fileID: 1731621548}
   _camera: {fileID: 1469852662}
-  _score: {fileID: 1723971676}
-  _level: {fileID: 357449861}
-  _pauseButton: {fileID: 358698454}
 --- !u!4 &313724078
 Transform:
   m_ObjectHideFlags: 0
@@ -272,7 +269,9 @@ Transform:
   m_LocalPosition: {x: 5, y: 20, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1059518084}
+  - {fileID: 1654355573}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &357449859
@@ -542,8 +541,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 466880232}
+  - component: {fileID: 466880233}
   m_Layer: 5
-  m_Name: TopHolder
+  m_Name: UiHandler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -570,6 +570,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -50}
   m_SizeDelta: {x: 0, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &466880233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 466880231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 347681a20d000cc4db58e0d594cf0d1f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Tettris.Scenes::Tettris.Scenes.Gameplay.GameplayUIHandler
+  _scoreText: {fileID: 1723971676}
+  _levelText: {fileID: 357449861}
+  _pauseButton: {fileID: 358698454}
 --- !u!1 &609300815
 GameObject:
   m_ObjectHideFlags: 0
@@ -607,6 +622,52 @@ RectTransform:
   m_AnchoredPosition: {x: 150, y: -150}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1059518082
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1059518084}
+  - component: {fileID: 1059518083}
+  m_Layer: 0
+  m_Name: Spawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1059518083
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1059518082}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d79f4c1090da4b41ad3f469931a3ffd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Tettris.Scenes::Tettris.Scenes.Gameplay.CubeSpawner
+  _cubeData: {fileID: 11400000, guid: acb6623640e89194f9aeeada7b1c7e65, type: 2}
+  _startPosition: {fileID: 1647208490}
+--- !u!4 &1059518084
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1059518082}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 313724078}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1089313708
 GameObject:
   m_ObjectHideFlags: 0
@@ -1058,6 +1119,51 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1654355571
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1654355573}
+  - component: {fileID: 1654355572}
+  m_Layer: 0
+  m_Name: InputHandler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1654355572
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1654355571}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f5f2ee46058d1442874735f8492c3fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Tettris.Scenes::Tettris.Scenes.Gameplay.TetrisInputHandler
+  _minSwipeDistance: 50
+--- !u!4 &1654355573
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1654355571}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 313724078}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1723971674
 GameObject:
