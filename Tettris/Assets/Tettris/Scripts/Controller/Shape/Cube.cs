@@ -24,6 +24,8 @@ namespace Tettris.Controller.Shape
             _returnToPool = returnToPool;
             _gridPosition = BaseTetromino.GridPosition;
 
+            transform.position = new Vector3(_gridPosition.x, _gridPosition.y, transform.position.z);
+
             BaseTetromino.OnPositionChanged += BaseTetromino_OnPositionChanged;
             BaseTetromino.OnDestroyed += BaseTetromino_OnDestroyed;
         }
