@@ -11,6 +11,7 @@ public class GameService : IGameService
     public ITetromino Tetromino { get; private set; }
     public float CurrentLevel { get; private set; }
     public bool Running { get; private set; }
+    public bool IsFastDropping { get; set; }
     
     public GameService()
     {
@@ -86,24 +87,6 @@ public class GameService : IGameService
         return false;
     }
 
-    public void HardDrop()
-    {
-        if (Tetromino == null) return;
-        
-        while (true)
-        {
-            var temporaryPos = Factory.Move(Tetromino.BaseTetrominos, Vector2.down);
-            if (Board.Move(temporaryPos))
-            {
-                Tetromino.Move(Vector2.down);
-            }
-            else
-            {
-                break;
-            }
-        }
-    }
-
     public IList<int> CompleteLine()
     {
         return Board.CompleteLine();
@@ -111,7 +94,8 @@ public class GameService : IGameService
 
     public float Speed()
     {
-        return 5 / (CurrentLevel + 1);
+        float baseSpeed = 5f / (CurrentLevel + 1);
+        return IsFastDropping ? baseSpeed * 0.1f : baseSpeed;
     }
 
     public bool GameOver()

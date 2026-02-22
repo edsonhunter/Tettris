@@ -16,7 +16,7 @@ namespace Tettris.Services.Interface
         ITetromino NextRound();
         void Move(Vector3 direction);
         void Rotate(Quaternion direction);
-        void HardDrop();
+        bool IsFastDropping { get; set; }
         bool NextTurno();
         IList<int> CompleteLine();
         bool GameOver();

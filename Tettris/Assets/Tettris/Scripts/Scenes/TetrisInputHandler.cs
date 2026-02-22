@@ -15,9 +15,10 @@ namespace Tettris.Scenes.Gameplay
         public event Action OnMoveLeft;
         public event Action OnMoveRight;
         public event Action OnRotate;
-        public event Action OnFastDrop;
+        public event Action OnFastDropStart;
+        public event Action OnFastDropEnd;
 
-        private void Update()
+        public void Loop()
         {
             CheckTouchscreen();
             CheckKeyboard();
@@ -31,7 +32,9 @@ namespace Tettris.Scenes.Gameplay
             if (keyboard.leftArrowKey.wasPressedThisFrame) OnMoveLeft?.Invoke();
             else if (keyboard.rightArrowKey.wasPressedThisFrame) OnMoveRight?.Invoke();
 
-            if (keyboard.downArrowKey.wasPressedThisFrame) OnFastDrop?.Invoke();
+            if (keyboard.downArrowKey.wasPressedThisFrame) OnFastDropStart?.Invoke();
+            if (keyboard.downArrowKey.wasReleasedThisFrame) OnFastDropEnd?.Invoke();
+            
             if (keyboard.upArrowKey.wasPressedThisFrame) OnRotate?.Invoke();
         }
 
@@ -64,9 +67,13 @@ namespace Tettris.Scenes.Gameplay
                     }
                     else
                     {
-                        if (swipeDelta.y < 0) OnFastDrop?.Invoke();
+                        if (swipeDelta.y < 0) OnFastDropStart?.Invoke();
                     }
                 }
+            } 
+            else if (touch.press.wasReleasedThisFrame && !_isSwiping)
+            {
+                OnFastDropEnd?.Invoke();
             }
         }
     }

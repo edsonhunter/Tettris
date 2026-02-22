@@ -12,7 +12,8 @@ namespace Tettris.Scenes.Gameplay
 
         private Vector3 _currentRotation;
         private TetrisInputHandler _inputHandler;
-
+        public bool _isTriggering;
+        
         public void Initialize(int boardWidth, int boardHeight, TetrisInputHandler inputHandler)
         {
             _inputHandler = inputHandler;
@@ -20,7 +21,6 @@ namespace Tettris.Scenes.Gameplay
             {
                 _inputHandler.OnMoveLeft += PanLeft;
                 _inputHandler.OnMoveRight += PanRight;
-                _inputHandler.OnFastDrop += DropShake;
             }
 
             float centerX = (boardWidth - 1) / 2f;
@@ -54,8 +54,10 @@ namespace Tettris.Scenes.Gameplay
             }
         }
 
-        private void Update()
+        public void Loop()
         {
+            if (!_isTriggering) return;
+            
             if (_currentRotation.sqrMagnitude > 0.001f)
             {
                 _currentRotation = Vector3.Lerp(_currentRotation, Vector3.zero, Time.deltaTime * _returnSpeed);
@@ -65,18 +67,19 @@ namespace Tettris.Scenes.Gameplay
             {
                 _currentRotation = Vector3.zero;
                 transform.localRotation = Quaternion.identity;
-                enabled = false;
+                _isTriggering = false;
             }
         }
+
 
         private void TriggerEffect(Vector3 rotationOffset)
         {
             _currentRotation += rotationOffset;
-            enabled = true;
+            _isTriggering = true;
         }
 
-        public void PanLeft() => TriggerEffect(new Vector3(0, -_panAngle, 0));
-        public void PanRight() => TriggerEffect(new Vector3(0, _panAngle, 0));
+        private void PanLeft() => TriggerEffect(new Vector3(0, -_panAngle, 0));
+        private void PanRight() => TriggerEffect(new Vector3(0, _panAngle, 0));
         public void DropShake() => TriggerEffect(new Vector3(_dropAngle, 0, 0));
 
         private void OnDestroy()
@@ -85,7 +88,6 @@ namespace Tettris.Scenes.Gameplay
             {
                 _inputHandler.OnMoveLeft -= PanLeft;
                 _inputHandler.OnMoveRight -= PanRight;
-                _inputHandler.OnFastDrop -= DropShake;
             }
         }
     }

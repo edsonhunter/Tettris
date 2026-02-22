@@ -55,15 +55,23 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
         _inputHandler.OnMoveLeft += InputHandler_OnMoveLeft;
         _inputHandler.OnMoveRight += InputHandler_OnMoveRight;
         _inputHandler.OnRotate += InputHandler_OnRotate;
-        _inputHandler.OnFastDrop += InputHandler_OnFastDrop;
+        _inputHandler.OnFastDropStart += InputHandler_OnFastDropStart;
+        _inputHandler.OnFastDropEnd += InputHandler_OnFastDropEnd;
     }
 
     private void InputHandler_OnMoveLeft() => GameService.Move(Vector3.left);
     private void InputHandler_OnMoveRight() => GameService.Move(Vector3.right);
     private void InputHandler_OnRotate() => GameService.Rotate(Quaternion.Euler(0, 0, -90f));
-    private void InputHandler_OnFastDrop()
+    
+    private void InputHandler_OnFastDropStart()
     {
-        GameService.HardDrop();
+        GameService.IsFastDropping = true;
+        _dropCts?.Cancel();
+    }
+
+    private void InputHandler_OnFastDropEnd()
+    {
+        GameService.IsFastDropping = false;
         _dropCts?.Cancel();
     }
 
@@ -74,13 +82,15 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
             _inputHandler.OnMoveLeft -= InputHandler_OnMoveLeft;
             _inputHandler.OnMoveRight -= InputHandler_OnMoveRight;
             _inputHandler.OnRotate -= InputHandler_OnRotate;
-            _inputHandler.OnFastDrop -= InputHandler_OnFastDrop;
+            _inputHandler.OnFastDropStart -= InputHandler_OnFastDropStart;
+            _inputHandler.OnFastDropEnd -= InputHandler_OnFastDropEnd;
         }
     }
 
     protected override void Loop()
     {
-        // Loop is now empty as Input is handled by TetrisInputHandler
+        _inputHandler.Loop();
+        _cameraController.Loop();
     }
 
     private async Task TurnoAsync()
