@@ -84,6 +84,24 @@ public class GameService : IGameService
         return false;
     }
 
+    public void HardDrop()
+    {
+        if (Tetromino == null) return;
+        
+        while (true)
+        {
+            var temporaryPos = Factory.Move(Tetromino.BaseTetrominos, Vector2.down);
+            if (Board.Move(temporaryPos))
+            {
+                Tetromino.Move(Vector2.down);
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+
     public IList<int> CompleteLine()
     {
         return Board.CompleteLine();

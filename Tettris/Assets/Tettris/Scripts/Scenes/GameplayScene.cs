@@ -58,6 +58,10 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
         _inputHandler.OnMoveRight += () => GameService.Move(Vector3.right);
         _inputHandler.OnRotate += () => GameService.Rotate(Quaternion.Euler(0, 0, 90f));
         _inputHandler.OnFastDrop += () => _dropCts?.Cancel();
+    private void InputHandler_OnFastDrop()
+    {
+        GameService.HardDrop();
+        _dropCts?.Cancel();
     }
 
     private void OnDestroy()
