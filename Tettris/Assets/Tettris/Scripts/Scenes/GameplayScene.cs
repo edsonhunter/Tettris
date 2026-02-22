@@ -16,12 +16,10 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
     [SerializeField] private CubeSpawner _cubeSpawner;
     [SerializeField] private GameplayUIHandler _uiHandler;
     [SerializeField] private TetrisInputHandler _inputHandler;
+    [SerializeField] private BoardRenderer _boardRenderer;
+    [SerializeField] private CameraController _cameraController;
 
     private CancellationTokenSource _dropCts;
-
-    [Header("Scene References")]
-    [SerializeField] private GameObject _background = null;
-    [SerializeField] private Camera _camera = null;
 
     private IGameService GameService { get; set; }
     private int CurrentScore { get; set; }
@@ -31,9 +29,11 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
         GameService = GetService<IGameService>();
         GameService.CreateNewBoard(SceneData.Altura, SceneData.Largura);
         
+        _boardRenderer.Initialize(SceneData.Largura, SceneData.Altura);
+        _cameraController.Initialize(SceneData.Largura, SceneData.Altura);
         _uiHandler.Initialize(OnPauseClick);
         SubscribeToInput();
-        
+
         loaded(true);
     }
     
