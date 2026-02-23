@@ -18,6 +18,7 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
 
     private IGameService GameService { get; set; }
     private int CurrentScore { get; set; }
+    private ITetromino _activeTetromino;
     
     protected override void Loading(Action<bool> loaded)
     {
@@ -78,6 +79,12 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
             _inputHandler.OnFastDropEnd -= InputHandler_OnFastDropEnd;
         }
 
+        if (_activeTetromino != null)
+        {
+            _activeTetromino.OnMove -= ActiveTetromino_OnMove;
+            _activeTetromino.OnRotate -= ActiveTetromino_OnRotate;
+        }
+
         UnsubscribeFromGameService();
     }
 
@@ -110,11 +117,47 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
     private void GameService_OnTetrominoSpawned(ITetromino tetromino)
     {
         _cubeSpawner.SpawnTetromino(tetromino);
+        
+        if (_activeTetromino != null)
+        {
+            _activeTetromino.OnMove -= ActiveTetromino_OnMove;
+            _activeTetromino.OnRotate -= ActiveTetromino_OnRotate;
+        }
+
+        _activeTetromino = tetromino;
+        _activeTetromino.OnMove += ActiveTetromino_OnMove;
+        _activeTetromino.OnRotate += ActiveTetromino_OnRotate;
+        UpdateBoardHighlights();
     }
 
     private void GameService_OnPieceLanded()
     {
         _cameraController.DropShake();
+        if (_activeTetromino != null)
+        {
+            _activeTetromino.OnMove -= ActiveTetromino_OnMove;
+            _activeTetromino.OnRotate -= ActiveTetromino_OnRotate;
+            _activeTetromino = null;
+        }
+        _boardRenderer.HighlightColumns(null);
+    }
+
+    private void ActiveTetromino_OnMove(object sender, System.Numerics.Vector2 e)
+    {
+        UpdateBoardHighlights();
+    }
+
+    private void ActiveTetromino_OnRotate(object sender, System.Collections.Generic.IList<System.Numerics.Vector2> e)
+    {
+        UpdateBoardHighlights();
+    }
+
+    private void UpdateBoardHighlights()
+    {
+        if (_activeTetromino == null || _boardRenderer == null) return;
+        
+        var columns = System.Linq.Enumerable.Select(_activeTetromino.BaseTetrominos, t => (int)t.GridPosition.X);
+        _boardRenderer.HighlightColumns(System.Linq.Enumerable.Distinct(columns));
     }
 
     private void GameService_OnLinesCleared(int score)

@@ -8,8 +8,19 @@ namespace Tettris.Scenes.Gameplay
         private MeshFilter _meshFilter;
         private MeshRenderer _meshRenderer;
 
+        private int _width;
+        private int _height;
+        private Color32[] _colors;
+        private readonly Color32 _baseColor = new Color32(25, 25, 38, 127);
+        private readonly Color32 _highlightColor = new Color32(45, 45, 60, 127);
+        private Mesh _mesh;
+        private int[] _lastHighlightedColumns;
+
         public void Initialize(int width, int height)
         {
+            _width = width;
+            _height = height;
+            
             _meshFilter = GetComponent<MeshFilter>();
             _meshRenderer = GetComponent<MeshRenderer>();
 
@@ -18,20 +29,22 @@ namespace Tettris.Scenes.Gameplay
             if (_meshRenderer.sharedMaterial == null)
             {
                 Material darkMat = new Material(Shader.Find("Sprites/Default"));
-                darkMat.color = new Color(0.1f, 0.1f, 0.15f, 0.5f);
+                darkMat.color = Color.white;
                 _meshRenderer.material = darkMat;
             }
         }
 
         private void GenerateGridMesh(int width, int height)
         {
-            Mesh mesh = new Mesh();
-            mesh.name = "TetrisGrid";
+            _mesh = new Mesh();
+            _mesh.name = "TetrisGrid";
+            _mesh.MarkDynamic();
 
             int numQuads = width * height;
             Vector3[] vertices = new Vector3[numQuads * 4];
             int[] triangles = new int[numQuads * 6];
             Vector2[] uvs = new Vector2[numQuads * 4];
+            _colors = new Color32[numQuads * 4];
 
             int vIndex = 0;
             int tIndex = 0;
@@ -57,6 +70,11 @@ namespace Tettris.Scenes.Gameplay
                     uvs[vIndex + 2] = new Vector2(1, 1);
                     uvs[vIndex + 3] = new Vector2(1, 0);
 
+                    _colors[vIndex + 0] = _baseColor;
+                    _colors[vIndex + 1] = _baseColor;
+                    _colors[vIndex + 2] = _baseColor;
+                    _colors[vIndex + 3] = _baseColor;
+
                     triangles[tIndex + 0] = vIndex + 0;
                     triangles[tIndex + 1] = vIndex + 1;
                     triangles[tIndex + 2] = vIndex + 2;
@@ -69,14 +87,55 @@ namespace Tettris.Scenes.Gameplay
                 }
             }
 
-            mesh.vertices = vertices;
-            mesh.uv = uvs;
-            mesh.triangles = triangles;
-            mesh.RecalculateNormals();
+            _mesh.vertices = vertices;
+            _mesh.uv = uvs;
+            _mesh.triangles = triangles;
+            _mesh.colors32 = _colors;
+            _mesh.RecalculateNormals();
 
-            _meshFilter.mesh = mesh;
+            _meshFilter.mesh = _mesh;
             
             transform.position = new Vector3(0, 0, 0.5f);
+        }
+
+        public void HighlightColumns(System.Collections.Generic.IEnumerable<int> columns)
+        {
+            if (_mesh == null || _colors == null) return;
+
+            if (_lastHighlightedColumns != null)
+            {
+                foreach (int col in _lastHighlightedColumns)
+                {
+                    if (col >= 0 && col < _width) SetColumnColor(col, _baseColor);
+                }
+            }
+
+            if (columns != null)
+            {
+                _lastHighlightedColumns = System.Linq.Enumerable.ToArray(columns);
+                foreach (int col in _lastHighlightedColumns)
+                {
+                    if (col >= 0 && col < _width) SetColumnColor(col, _highlightColor);
+                }
+            }
+            else
+            {
+                _lastHighlightedColumns = null;
+            }
+
+            _mesh.colors32 = _colors;
+        }
+
+        private void SetColumnColor(int x, Color32 color)
+        {
+            for (int y = 0; y < _height; y++)
+            {
+                int vIndex = (y * _width + x) * 4;
+                _colors[vIndex + 0] = color;
+                _colors[vIndex + 1] = color;
+                _colors[vIndex + 2] = color;
+                _colors[vIndex + 3] = color;
+            }
         }
     }
 }
