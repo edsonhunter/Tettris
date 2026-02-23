@@ -47,10 +47,8 @@ namespace Tettris.Scenes.Gameplay
             {
                 _touchStartPos = touch.position.ReadValue();
                 _isSwiping = true;
-                return;
             }
-            
-            if (touch.press.wasReleasedThisFrame && _isSwiping)
+            else if (touch.press.wasReleasedThisFrame && _isSwiping)
             {
                 _isSwiping = false;
                 Vector2 touchEndPos = touch.position.ReadValue();
