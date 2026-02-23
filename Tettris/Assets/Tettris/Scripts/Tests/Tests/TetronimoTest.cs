@@ -6,7 +6,7 @@ using Tettris.Domain.Board;
 using Tettris.Domain.Interface.Board;
 using Tettris.Domain.Interface.Tetronimo;
 using Tettris.Domain.Tetronimo;
-using UnityEngine;
+using System.Numerics;
 
 namespace DefaultNamespace
 {
@@ -74,7 +74,7 @@ namespace DefaultNamespace
         {
             var board = CreateBoard(10, 4);
             var tetromino = CreateLineTetromino();
-            var direction = Vector2.up;
+            var direction = new Vector2(0, 1);
             if (board.Move(Factory.Move(tetromino.BaseTetrominos, direction)))
             {
                 tetromino.Move(direction);
@@ -91,7 +91,7 @@ namespace DefaultNamespace
             var tetromino = CreateLineTetromino();
             for (int i = 0; i < 10; i++)
             {
-                var direction = Vector2.up;
+                var direction = new Vector2(0, 1);
                 if (!board.Move(Factory.Move(tetromino.BaseTetrominos, direction)))
                 {
                     continue;
@@ -111,7 +111,7 @@ namespace DefaultNamespace
             var tetromino = CreateLineTetromino();
             for (int i = 0; i < 5; i++)
             {
-                var direction = Vector2.up;
+                var direction = new Vector2(0, 1);
                 if (!board.Move(Factory.Move(tetromino.BaseTetrominos, direction)))
                 {
                     continue;
@@ -122,7 +122,7 @@ namespace DefaultNamespace
 
             if (rotate)
             {
-                var temporaryPos = Factory.Rotate(tetromino.BaseTetrominos, Quaternion.Euler(0, 0, 90f));
+                var temporaryPos = Factory.Rotate(tetromino.BaseTetrominos, 90f);
                 if (board.Rotate(temporaryPos))
                 {
                     tetromino.Rotate(temporaryPos.Select(x => x.GridPosition).ToList());
@@ -131,7 +131,7 @@ namespace DefaultNamespace
 
             for (int i = 0; i < 5; i++)
             {
-                var newPos = Vector2.up;
+                var newPos = new Vector2(0, 1);
                 if (!board.Move(Factory.Move(tetromino.BaseTetrominos, newPos)))
                 {
                     continue;

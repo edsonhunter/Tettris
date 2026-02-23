@@ -1,5 +1,5 @@
 using System;
-using UnityEngine;
+using System.Numerics;
 
 namespace Tettris.Domain.Interface.Tetronimo
 {
@@ -12,7 +12,7 @@ namespace Tettris.Domain.Interface.Tetronimo
         event EventHandler<Vector2> OnPositionChanged;
         
         void Destroy();
-        void Rotate(Vector2 pivot, Quaternion newPos);
+        void Rotate(Vector2 pivot, float angleDegrees);
         Vector2 Move(Vector2 newPos);
         void SetPosition(Vector2 newPo);
     }

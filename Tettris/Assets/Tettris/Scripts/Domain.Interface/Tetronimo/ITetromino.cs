@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
+using System.Numerics;
 
 namespace Tettris.Domain.Interface.Tetronimo
 {
@@ -9,10 +9,10 @@ namespace Tettris.Domain.Interface.Tetronimo
         Guid TetronimoId { get; }
         TetrominoType TetrominoType { get; }
         IList<IBaseTetromino> BaseTetrominos { get; }
-        event EventHandler<Vector3> OnMove;
+        event EventHandler<Vector2> OnMove;
         event EventHandler<IList<Vector2>> OnRotate;
 
-        Vector3 StartPosition(List<Vector3> startPositions);
+        Vector2 StartPosition(List<Vector2> startPositions);
         void Move(Vector2 newPos);
         void Rotate(IList<Vector2> newPos);
     }

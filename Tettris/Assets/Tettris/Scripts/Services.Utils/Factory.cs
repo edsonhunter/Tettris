@@ -6,7 +6,7 @@ using Tettris.Domain.Board;
 using Tettris.Domain.Interface.Board;
 using Tettris.Domain.Interface.Tetronimo;
 using Tettris.Domain.Tetronimo;
-using UnityEngine;
+using System.Numerics;
 
 public class Factory
 {
@@ -30,7 +30,7 @@ public class Factory
         if (type == null)
         {
             var values = Enum.GetValues(typeof(TetrominoType));
-            type = (TetrominoType)values.GetValue(UnityEngine.Random.Range(0, values.Length));
+            type = (TetrominoType)values.GetValue(new Random().Next(0, values.Length));
         }
 
         Vector2[] positions;
@@ -58,20 +58,20 @@ public class Factory
             .Cast<IBaseTetromino>().ToList();
     }
     
-    public static IList<IBaseTetromino> Rotate(IList<IBaseTetromino> currenTetrominos, Quaternion newPos)
+    public static IList<IBaseTetromino> Rotate(IList<IBaseTetromino> currenTetrominos, float angleDegrees)
     {
         var rotatedTetromino = currenTetrominos.Select(baseTetromino =>
                 new BaseTetromino(baseTetromino.TetronimoId, baseTetromino.GridPosition))
             .Cast<IBaseTetromino>().ToList();
 
-        float sumX = currenTetrominos.Sum(t => t.GridPosition.x);
-        float sumY = currenTetrominos.Sum(t => t.GridPosition.y);
+        float sumX = currenTetrominos.Sum(t => t.GridPosition.X);
+        float sumY = currenTetrominos.Sum(t => t.GridPosition.Y);
         int count = currenTetrominos.Count;
-        Vector2 pivot = new Vector2(Mathf.Round(sumX / count), Mathf.Round(sumY / count));
+        Vector2 pivot = new Vector2((float)Math.Round(sumX / count), (float)Math.Round(sumY / count));
         
         foreach (IBaseTetromino baseTetromino in rotatedTetromino)
         {
-            baseTetromino.Rotate(pivot, newPos);
+            baseTetromino.Rotate(pivot, angleDegrees);
         }
 
         return rotatedTetromino;

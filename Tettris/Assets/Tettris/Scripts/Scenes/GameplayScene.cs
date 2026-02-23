@@ -53,9 +53,9 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
         _inputHandler.OnFastDropEnd += InputHandler_OnFastDropEnd;
     }
 
-    private void InputHandler_OnMoveLeft() => GameService.Move(Vector3.left);
-    private void InputHandler_OnMoveRight() => GameService.Move(Vector3.right);
-    private void InputHandler_OnRotate() => GameService.Rotate(Quaternion.Euler(0, 0, -90f));
+    private void InputHandler_OnMoveLeft() => GameService.Move(new System.Numerics.Vector2(-1, 0));
+    private void InputHandler_OnMoveRight() => GameService.Move(new System.Numerics.Vector2(1, 0));
+    private void InputHandler_OnRotate() => GameService.Rotate(-90f);
     
     private void InputHandler_OnFastDropStart()
     {

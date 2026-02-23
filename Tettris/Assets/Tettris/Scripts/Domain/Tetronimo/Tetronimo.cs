@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Tettris.Domain.Interface.Tetronimo;
-using UnityEngine;
+using System.Numerics;
 
 namespace Tettris.Domain.Tetronimo
 {
@@ -12,10 +12,10 @@ namespace Tettris.Domain.Tetronimo
         public TetrominoType TetrominoType { get; }
         public IList<IBaseTetromino> BaseTetrominos => _baseTetrominos.AsReadOnly();
         private List<IBaseTetromino> _baseTetrominos { get; set; }
-        private EventHandler<Vector3> _onMove { get; set; }
+        private EventHandler<Vector2> _onMove { get; set; }
         private EventHandler<IList<Vector2>> _onRotate { get; set; }
         
-        public event EventHandler<Vector3> OnMove
+        public event EventHandler<Vector2> OnMove
         {
             add => _onMove += value;
             remove => _onMove -= value;
@@ -33,7 +33,7 @@ namespace Tettris.Domain.Tetronimo
             _baseTetrominos = new List<IBaseTetromino>(baseTetrominos);
         }
 
-        public Vector3 StartPosition(List<Vector3> startPositions)
+        public Vector2 StartPosition(List<Vector2> startPositions)
         {
             for (int baseTetrominoIdx = 0; baseTetrominoIdx < _baseTetrominos.Count; baseTetrominoIdx++)
             {

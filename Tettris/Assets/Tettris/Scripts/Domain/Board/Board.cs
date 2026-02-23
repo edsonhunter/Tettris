@@ -1,7 +1,8 @@
+using System;
 using System.Collections.Generic;
 using Tettris.Domain.Interface.Board;
 using Tettris.Domain.Interface.Tetronimo;
-using UnityEngine;
+using System.Numerics;
 
 namespace Tettris.Domain.Board
 {
@@ -23,8 +24,8 @@ namespace Tettris.Domain.Board
             var moved = false;
             foreach (var movedTetromino in moveTetrominos)
             {
-                var linhaIdx = Mathf.FloorToInt(movedTetromino.GridPosition.y); 
-                var colunaIdx = Mathf.FloorToInt(movedTetromino.GridPosition.x);
+                var linhaIdx = (int)Math.Floor(movedTetromino.GridPosition.Y); 
+                var colunaIdx = (int)Math.Floor(movedTetromino.GridPosition.X);
 
                 if (colunaIdx < 0 && colunaIdx > -1)
                 {
@@ -55,8 +56,8 @@ namespace Tettris.Domain.Board
             var moved = false;
             foreach (var movedTetromino in moveTetrominos)
             {
-                var linhaIdx = Mathf.FloorToInt(movedTetromino.GridPosition.y); 
-                var colunaIdx = Mathf.FloorToInt(movedTetromino.GridPosition.x);
+                var linhaIdx = (int)Math.Floor(movedTetromino.GridPosition.Y); 
+                var colunaIdx = (int)Math.Floor(movedTetromino.GridPosition.X);
 
                 if (linhaIdx >= Linhas || colunaIdx >= Colunas || linhaIdx < 0 || colunaIdx < 0)
                 {
@@ -81,8 +82,8 @@ namespace Tettris.Domain.Board
         {
             foreach (var movedTetromino in tetrominoBaseTetrominos)
             {
-                var linhaIdx = Mathf.FloorToInt(movedTetromino.GridPosition.y);
-                var colunaIdx = Mathf.FloorToInt(movedTetromino.GridPosition.x);
+                var linhaIdx = (int)Math.Floor(movedTetromino.GridPosition.Y);
+                var colunaIdx = (int)Math.Floor(movedTetromino.GridPosition.X);
                 if (!Tiles[linhaIdx, colunaIdx].OccupySlot(movedTetromino))
                 {
                     return false;
@@ -143,7 +144,7 @@ namespace Tettris.Domain.Board
                         continue;
                     }
                     var t = Tiles[line, column].CurrentTetromino;
-                    t.Move(Vector2.down);
+                    t.Move(new Vector2(0, -1));
                     Tiles[line - 1, column].OccupySlot(t);
                     Tiles[line, column].ReleaseSlot();
                 }

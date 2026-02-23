@@ -1,10 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Tettris.Domain.Interface.Board;
 using Tettris.Domain.Interface.Tetronimo;
-using UnityEngine;
+using System.Numerics;
 
 namespace Tettris.Services.Interface
 {
@@ -14,8 +12,8 @@ namespace Tettris.Services.Interface
         bool IsFastDropping { get; set; }
 
         void CreateNewBoard(int linhas, int colunas);
-        void Move(Vector3 direction);
-        void Rotate(Quaternion direction);
+        void Move(Vector2 direction);
+        void Rotate(float angleDegrees);
 
         Task StartGameAsync(CancellationToken token);
         event Action<ITetromino> OnTetrominoSpawned;

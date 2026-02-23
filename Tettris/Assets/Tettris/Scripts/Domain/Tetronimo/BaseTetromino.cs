@@ -1,7 +1,7 @@
 using System;
 using Tettris.Domain.Interface.Tetronimo;
 using Tettris.Utils;
-using UnityEngine;
+using System.Numerics;
 
 namespace Tettris.Domain.Tetronimo
 {
@@ -24,10 +24,10 @@ namespace Tettris.Domain.Tetronimo
             OnDestroyed?.Invoke(this, EventArgs.Empty);
         }
 
-        public void Rotate(Vector2 pivot, Quaternion newPos)
+        public void Rotate(Vector2 pivot, float angleDegrees)
         {
-            GridPosition = GridPosition.RotateAroundPivotVector2(pivot, newPos);
-            GridPosition = new Vector2(Mathf.Round(GridPosition.x), Mathf.Round(GridPosition.y));
+            GridPosition = GridPosition.RotateAroundPivotVector2(pivot, angleDegrees);
+            GridPosition = new Vector2((float)Math.Round(GridPosition.X), (float)Math.Round(GridPosition.Y));
             OnPositionChanged?.Invoke(this, GridPosition);
         }
         

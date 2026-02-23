@@ -1,5 +1,6 @@
 using Tettris.Domain.Interface.Tetronimo;
 using UnityEngine;
+using SVector2 = System.Numerics.Vector2;
 
 namespace Tettris.Controller.Shape
 {
@@ -7,7 +8,6 @@ namespace Tettris.Controller.Shape
     {
         [SerializeField]
         private Vector2 _gridPosition;
-        public Vector2 GridPosition => _gridPosition;
 
         private IBaseTetromino BaseTetromino { get; set; }
         private System.Action<Cube> _returnToPool;
@@ -22,7 +22,7 @@ namespace Tettris.Controller.Shape
         {
             BaseTetromino = baseTetromino;
             _returnToPool = returnToPool;
-            _gridPosition = BaseTetromino.GridPosition;
+            _gridPosition = new Vector2(BaseTetromino.GridPosition.X, BaseTetromino.GridPosition.Y);
 
             transform.position = new Vector3(_gridPosition.x, _gridPosition.y, transform.position.z);
 
@@ -30,10 +30,10 @@ namespace Tettris.Controller.Shape
             BaseTetromino.OnDestroyed += BaseTetromino_OnDestroyed;
         }
 
-        private void BaseTetromino_OnPositionChanged(object sender, Vector2 position)
+        private void BaseTetromino_OnPositionChanged(object sender, SVector2 position)
         {
-            _gridPosition = position;
-            transform.position = new Vector3(position.x, position.y, transform.position.z);
+            _gridPosition = new Vector2(position.X, position.Y);
+            transform.position = new Vector3(position.X, position.Y, transform.position.z);
         }
 
         private void BaseTetromino_OnDestroyed(object sender, System.EventArgs e)

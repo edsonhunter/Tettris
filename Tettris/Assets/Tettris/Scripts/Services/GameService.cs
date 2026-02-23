@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Tettris.Domain.Interface.Board;
 using Tettris.Domain.Interface.Tetronimo;
 using Tettris.Services.Interface;
-using UnityEngine;
+using System.Numerics;
 
 public class GameService : IGameService
 {
@@ -53,13 +53,13 @@ public class GameService : IGameService
         CurrentLevel++;
         Tetromino = Factory.CreateTetromino();
         
-        Vector2 spawnPosition = new Vector2(Mathf.FloorToInt(Board.Colunas / 2), Board.Linhas - 1);
+        Vector2 spawnPosition = new Vector2((int)Math.Floor(Board.Colunas / 2f), Board.Linhas - 1);
         Tetromino.Move(spawnPosition);
         IsFastDropping = false;
         return Tetromino;
     }
 
-    public void Move(Vector3 direction)
+    public void Move(Vector2 direction)
     {
         if (Tetromino == null)
         {
@@ -75,14 +75,14 @@ public class GameService : IGameService
         Tetromino.Move(direction);
     }
 
-    public void Rotate(Quaternion direction)
+    public void Rotate(float angleDegrees)
     {
         if (Tetromino == null || Tetromino.TetrominoType == TetrominoType.O)
         {
             return;
         }
 
-        var temporaryPos = Factory.Rotate(Tetromino.BaseTetrominos, direction);
+        var temporaryPos = Factory.Rotate(Tetromino.BaseTetrominos, angleDegrees);
         if (!Board.Rotate(temporaryPos))
         {
             return;
@@ -93,10 +93,10 @@ public class GameService : IGameService
 
     public bool NextTurno()
     {
-        var temporaryPos = Factory.Move(Tetromino.BaseTetrominos, Vector2.down);
+        var temporaryPos = Factory.Move(Tetromino.BaseTetrominos, new Vector2(0, -1));
         if (Board.Move(temporaryPos))
         {
-            Tetromino.Move(Vector2.down);
+            Tetromino.Move(new Vector2(0, -1));
             return true;
         }
 
