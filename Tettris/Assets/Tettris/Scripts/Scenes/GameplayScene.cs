@@ -1,12 +1,11 @@
 using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Tettris.Manager.Interface;
 using Tettris.Scenes;
 using Tettris.Scenes.Interface;
 using Tettris.Services.Interface;
 using UnityEngine;
 using Tettris.Scenes.Gameplay;
+using Tettris.Domain.Interface.Tetronimo;
 
 public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
 {
@@ -16,8 +15,6 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
     [SerializeField] private TetrisInputHandler _inputHandler;
     [SerializeField] private BoardRenderer _boardRenderer;
     [SerializeField] private CameraController _cameraController;
-
-    private CancellationTokenSource _dropCts;
 
     private IGameService GameService { get; set; }
     private int CurrentScore { get; set; }
@@ -39,15 +36,12 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
     {
         StartCoroutine(GetManager<IAudioManager>().FadeIn(2f));
         
-        var tetromino = GameService.NextRound();
-        _cubeSpawner.SpawnTetromino(tetromino);
-        
-        _dropCts = new CancellationTokenSource();
-        _ = TurnoAsync();
-        
         CurrentScore = 0;
         _uiHandler.UpdateLevel(GameService.CurrentLevel);
         _uiHandler.UpdateScore(CurrentScore);
+
+        SubscribeToGameService();
+        _ = GameService.StartGameAsync(destroyCancellationToken);
     }
 
     private void SubscribeToInput()
@@ -66,13 +60,11 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
     private void InputHandler_OnFastDropStart()
     {
         GameService.IsFastDropping = true;
-        _dropCts?.Cancel();
     }
 
     private void InputHandler_OnFastDropEnd()
     {
         GameService.IsFastDropping = false;
-        _dropCts?.Cancel();
     }
 
     private void OnDestroy()
@@ -85,6 +77,8 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
             _inputHandler.OnFastDropStart -= InputHandler_OnFastDropStart;
             _inputHandler.OnFastDropEnd -= InputHandler_OnFastDropEnd;
         }
+
+        UnsubscribeFromGameService();
     }
 
     protected override void Loop()
@@ -93,49 +87,50 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
         _cameraController.Loop();
     }
 
-    private async Task TurnoAsync()
+    private void SubscribeToGameService()
     {
-        while (!GameService.GameOver())
-        {
-            if (!GameService.NextTurno())
-            {
-                _cameraController.DropShake();
-
-                if (CompletedLine())
-                {
-                    await Task.Delay(500, _dropCts.Token);
-                    _uiHandler.UpdateScore(CurrentScore);
-                }
-
-                var nextTetromino = GameService.NextRound();
-                _cubeSpawner.SpawnTetromino(nextTetromino);
-                _uiHandler.UpdateLevel(GameService.CurrentLevel);
-            }
-
-            try
-            {
-                await Task.Delay((int)(GameService.Speed() * 1000), _dropCts.Token);
-            }
-            catch (TaskCanceledException)
-            {
-                _dropCts = new CancellationTokenSource();
-            }
-        }
-
-        GetManager<ISceneManager>().LoadSceneOverlay(new EndGameData(200));
+        if (GameService == null) return;
+        GameService.OnTetrominoSpawned += GameService_OnTetrominoSpawned;
+        GameService.OnPieceLanded += GameService_OnPieceLanded;
+        GameService.OnLinesCleared += GameService_OnLinesCleared;
+        GameService.OnLevelChanged += GameService_OnLevelChanged;
+        GameService.OnGameOver += GameService_OnGameOver;
     }
 
-    private bool CompletedLine()
+    private void UnsubscribeFromGameService()
     {
-        var completedLines = GameService.CompleteLine();
-        if (completedLines.Count <= 0)
-        {
-            return false;
-        }
+        if (GameService == null) return;
+        GameService.OnTetrominoSpawned -= GameService_OnTetrominoSpawned;
+        GameService.OnPieceLanded -= GameService_OnPieceLanded;
+        GameService.OnLinesCleared -= GameService_OnLinesCleared;
+        GameService.OnLevelChanged -= GameService_OnLevelChanged;
+        GameService.OnGameOver -= GameService_OnGameOver;
+    }
 
-        CurrentScore += completedLines.Count * 100;
+    private void GameService_OnTetrominoSpawned(ITetromino tetromino)
+    {
+        _cubeSpawner.SpawnTetromino(tetromino);
+    }
 
-        return true;
+    private void GameService_OnPieceLanded()
+    {
+        _cameraController.DropShake();
+    }
+
+    private void GameService_OnLinesCleared(int score)
+    {
+        CurrentScore += score;
+        _uiHandler.UpdateScore(CurrentScore);
+    }
+
+    private void GameService_OnLevelChanged(float level)
+    {
+        _uiHandler.UpdateLevel(level);
+    }
+
+    private void GameService_OnGameOver()
+    {
+        GetManager<ISceneManager>().LoadSceneOverlay(new EndGameData(CurrentScore)); 
     }
 
     private void OnPauseClick()

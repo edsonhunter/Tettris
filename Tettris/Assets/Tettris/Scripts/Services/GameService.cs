@@ -1,5 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Tettris.Domain.Interface.Board;
 using Tettris.Domain.Interface.Tetronimo;
 using Tettris.Services.Interface;
@@ -11,7 +14,27 @@ public class GameService : IGameService
     public ITetromino Tetromino { get; private set; }
     public float CurrentLevel { get; private set; }
     public bool Running { get; private set; }
-    public bool IsFastDropping { get; set; }
+    private CancellationTokenSource _tickCts;
+    private bool _isFastDropping;
+    
+    public bool IsFastDropping 
+    { 
+        get => _isFastDropping; 
+        set 
+        {
+            _isFastDropping = value;
+            if (_isFastDropping) 
+            {
+                _tickCts?.Cancel();
+            }
+        } 
+    }
+
+    public event Action<ITetromino> OnTetrominoSpawned;
+    public event Action OnPieceLanded;
+    public event Action<int> OnLinesCleared;
+    public event Action<float> OnLevelChanged;
+    public event Action OnGameOver;
     
     public GameService()
     {
@@ -103,5 +126,66 @@ public class GameService : IGameService
     public bool GameOver()
     {
         return !Running;
+    }
+
+    public async Task StartGameAsync(CancellationToken token)
+    {
+        Running = true;
+        
+        var tetromino = NextRound();
+        OnTetrominoSpawned?.Invoke(tetromino);
+        OnLevelChanged?.Invoke(CurrentLevel);
+
+        _tickCts = CancellationTokenSource.CreateLinkedTokenSource(token);
+
+        while (Running && !token.IsCancellationRequested)
+        {
+            try
+            {
+                await Task.Delay((int)(Speed() * 1000), _tickCts.Token);
+            }
+            catch (TaskCanceledException)
+            {
+                if (token.IsCancellationRequested) break;
+                
+                _tickCts?.Dispose();
+                _tickCts = CancellationTokenSource.CreateLinkedTokenSource(token);
+            }
+
+            if (token.IsCancellationRequested) break;
+
+            if (!NextTurno())
+            {
+                OnPieceLanded?.Invoke();
+
+                var completedLines = CompleteLine();
+                if (completedLines.Count > 0)
+                {
+                    int score = completedLines.Count * 100;
+                    OnLinesCleared?.Invoke(score);
+                    
+                    try
+                    {
+                        await Task.Delay(500, token);
+                    }
+                    catch (TaskCanceledException) { break; }
+                }
+
+                if (Running)
+                {
+                    var nextTetromino = NextRound();
+                    OnTetrominoSpawned?.Invoke(nextTetromino);
+                    OnLevelChanged?.Invoke(CurrentLevel);
+                }
+            }
+        }
+
+        if (!Running && !token.IsCancellationRequested)
+        {
+            OnGameOver?.Invoke();
+        }
+
+        _tickCts?.Dispose();
+        _tickCts = null;
     }
 }

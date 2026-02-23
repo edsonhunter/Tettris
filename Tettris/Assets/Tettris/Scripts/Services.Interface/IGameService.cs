@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Tettris.Domain.Interface.Board;
 using Tettris.Domain.Interface.Tetronimo;
 using UnityEngine;
@@ -7,19 +10,18 @@ namespace Tettris.Services.Interface
 {
     public interface IGameService : IService
     {
-        IBoard Board { get; }
-        ITetromino Tetromino { get; }
         float CurrentLevel { get; }
-        bool Running { get; }
+        bool IsFastDropping { get; set; }
 
         void CreateNewBoard(int linhas, int colunas);
-        ITetromino NextRound();
         void Move(Vector3 direction);
         void Rotate(Quaternion direction);
-        bool IsFastDropping { get; set; }
-        bool NextTurno();
-        IList<int> CompleteLine();
-        bool GameOver();
-        float Speed();
+
+        Task StartGameAsync(CancellationToken token);
+        event Action<ITetromino> OnTetrominoSpawned;
+        event Action OnPieceLanded;
+        event Action<int> OnLinesCleared;
+        event Action<float> OnLevelChanged;
+        event Action OnGameOver;
     }
 }
