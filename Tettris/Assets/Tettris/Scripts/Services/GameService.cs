@@ -32,7 +32,7 @@ public class GameService : IGameService
         
         Vector2 spawnPosition = new Vector2(Mathf.FloorToInt(Board.Colunas / 2), Board.Linhas - 1);
         Tetromino.Move(spawnPosition);
-        
+        IsFastDropping = false;
         return Tetromino;
     }
 
@@ -82,6 +82,8 @@ public class GameService : IGameService
             Running = false;
         }
         
+        
+        IsFastDropping = false;
         Tetromino = null;
 
         return false;

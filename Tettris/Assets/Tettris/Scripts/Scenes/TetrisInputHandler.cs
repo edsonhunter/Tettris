@@ -47,8 +47,10 @@ namespace Tettris.Scenes.Gameplay
             {
                 _touchStartPos = touch.position.ReadValue();
                 _isSwiping = true;
+                return;
             }
-            else if (touch.press.wasReleasedThisFrame && _isSwiping)
+            
+            if (touch.press.wasReleasedThisFrame && _isSwiping)
             {
                 _isSwiping = false;
                 Vector2 touchEndPos = touch.position.ReadValue();
@@ -67,10 +69,13 @@ namespace Tettris.Scenes.Gameplay
                     }
                     else
                     {
-                        if (swipeDelta.y < 0) OnFastDropStart?.Invoke();
+                        if (swipeDelta.y < 0)
+                        {
+                            OnFastDropStart?.Invoke();
+                        }
                     }
                 }
-            } 
+            }
             else if (touch.press.wasReleasedThisFrame && !_isSwiping)
             {
                 OnFastDropEnd?.Invoke();

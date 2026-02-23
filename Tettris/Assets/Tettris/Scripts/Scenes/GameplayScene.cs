@@ -103,7 +103,7 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
 
                 if (CompletedLine())
                 {
-                    await Task.Delay(500);
+                    await Task.Delay(500, _dropCts.Token);
                     _uiHandler.UpdateScore(CurrentScore);
                 }
 
