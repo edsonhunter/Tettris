@@ -13,6 +13,9 @@ namespace Tettris.Controller.Shape
         private System.Action<Cube> _returnToPool;
         private MeshRenderer _meshRenderer;
 
+        [Header("Cosmic Materials")]
+        [SerializeField] private Shader _cosmicPieceShader;
+
         private void Awake()
         {
             _meshRenderer = GetComponent<MeshRenderer>();
@@ -59,6 +62,20 @@ namespace Tettris.Controller.Shape
             if (_meshRenderer != null)
             {
                 _meshRenderer.material = material;
+                
+                if (_cosmicPieceShader != null)
+                {
+                    _meshRenderer.material.shader = _cosmicPieceShader;
+                    if (_meshRenderer.material.HasProperty("_Color"))
+                    {
+                        var col = _meshRenderer.material.color;
+                        _meshRenderer.material.SetColor("_RimColor", col);
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning("CosmicPieceShader is missing in Cube!");
+                }
             }
         }
 

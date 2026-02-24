@@ -15,6 +15,7 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
     [SerializeField] private TetrisInputHandler _inputHandler;
     [SerializeField] private BoardRenderer _boardRenderer;
     [SerializeField] private CameraController _cameraController;
+    [SerializeField] private ShaderVariantCollection _shaderVariants;
 
     private IGameService GameService { get; set; }
     private int CurrentScore { get; set; }
@@ -22,6 +23,14 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
     
     protected override void Loading(Action<bool> loaded)
     {
+        if (_shaderVariants != null)
+        {
+            if (!_shaderVariants.isWarmedUp)
+            {
+                _shaderVariants.WarmUp();
+            }
+        }
+
         GameService = GetService<IGameService>();
         GameService.CreateNewBoard(SceneData.Altura, SceneData.Largura);
         
@@ -79,12 +88,7 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
             _inputHandler.OnFastDropEnd -= InputHandler_OnFastDropEnd;
         }
 
-        if (_activeTetromino != null)
-        {
-            _activeTetromino.OnMove -= ActiveTetromino_OnMove;
-            _activeTetromino.OnRotate -= ActiveTetromino_OnRotate;
-        }
-
+        UnsubscribeToActiveTetromino();
         UnsubscribeFromGameService();
     }
 
@@ -114,31 +118,37 @@ public class GameplayScene : BaseScene<GameplayScene.GamePlayData>
         GameService.OnGameOver -= GameService_OnGameOver;
     }
 
-    private void GameService_OnTetrominoSpawned(ITetromino tetromino)
+    private void SubscribeToActiveTetromino()
     {
-        _cubeSpawner.SpawnTetromino(tetromino);
-        
-        if (_activeTetromino != null)
-        {
-            _activeTetromino.OnMove -= ActiveTetromino_OnMove;
-            _activeTetromino.OnRotate -= ActiveTetromino_OnRotate;
-        }
-
-        _activeTetromino = tetromino;
         _activeTetromino.OnMove += ActiveTetromino_OnMove;
         _activeTetromino.OnRotate += ActiveTetromino_OnRotate;
-        UpdateBoardHighlights();
     }
 
-    private void GameService_OnPieceLanded()
+    private void UnsubscribeToActiveTetromino()
     {
-        _cameraController.DropShake();
         if (_activeTetromino != null)
         {
             _activeTetromino.OnMove -= ActiveTetromino_OnMove;
             _activeTetromino.OnRotate -= ActiveTetromino_OnRotate;
             _activeTetromino = null;
         }
+    }
+
+    private void GameService_OnTetrominoSpawned(ITetromino tetromino)
+    {
+        _cubeSpawner.SpawnTetromino(tetromino);
+
+        UnsubscribeToActiveTetromino();
+
+        _activeTetromino = tetromino;
+        SubscribeToActiveTetromino();
+        UpdateBoardHighlights();
+    }
+
+    private void GameService_OnPieceLanded()
+    {
+        _cameraController.DropShake();
+        UnsubscribeToActiveTetromino();
         _boardRenderer.HighlightColumns(null);
     }
 

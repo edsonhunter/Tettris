@@ -15,6 +15,11 @@ namespace Tettris.Scenes.Gameplay
         private readonly Color32 _highlightColor = new Color32(45, 45, 60, 127);
         private Mesh _mesh;
         private int[] _lastHighlightedColumns;
+        private GameObject _backgroundObj;
+        
+        [Header("Cosmic Materials")]
+        [SerializeField] private Material _cosmicBoardMaterial;
+        [SerializeField] private Material _cosmicBackgroundMaterial;
 
         public void Initialize(int width, int height)
         {
@@ -26,11 +31,36 @@ namespace Tettris.Scenes.Gameplay
 
             GenerateGridMesh(width, height);
             
-            if (_meshRenderer.sharedMaterial == null)
+            if (_meshRenderer.sharedMaterial == null || _meshRenderer.sharedMaterial.name == "Default-Material" || _meshRenderer.sharedMaterial.shader.name == "Sprites/Default")
             {
-                Material darkMat = new Material(Shader.Find("Sprites/Default"));
-                darkMat.color = Color.white;
-                _meshRenderer.material = darkMat;
+                if (_cosmicBoardMaterial != null)
+                {
+                    _meshRenderer.material = _cosmicBoardMaterial;
+                }
+                else
+                {
+                    Debug.LogWarning("CosmicBoardMaterial is missing in BoardRenderer!");
+                }
+            }
+
+            if (_backgroundObj == null)
+            {
+                _backgroundObj = GameObject.CreatePrimitive(PrimitiveType.Quad);
+                _backgroundObj.name = "CosmicBackground";
+                _backgroundObj.transform.parent = transform;
+                // Position behind the board, scaled to cover the camera
+                _backgroundObj.transform.localPosition = new Vector3(width / 2f - 0.5f, height / 2f - 0.5f, 5f);
+                _backgroundObj.transform.localScale = new Vector3(width * 3f, height * 3f, 1f);
+                
+                if (_cosmicBackgroundMaterial != null)
+                {
+                    Destroy(_backgroundObj.GetComponent<Collider>());
+                    _backgroundObj.GetComponent<MeshRenderer>().material = _cosmicBackgroundMaterial;
+                }
+                else
+                {
+                    Debug.LogWarning("CosmicBackgroundMaterial is missing in BoardRenderer!");
+                }
             }
         }
 
